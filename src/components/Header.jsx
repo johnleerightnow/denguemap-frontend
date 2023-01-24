@@ -3,14 +3,14 @@ import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
+// import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 //
-import AccountCircle from "@mui/icons-material/AccountCircle";
-import Switch from "@mui/material/Switch";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormGroup from "@mui/material/FormGroup";
+// import AccountCircle from "@mui/icons-material/AccountCircle";
+// import Switch from "@mui/material/Switch";
+// import FormControlLabel from "@mui/material/FormControlLabel";
+// import FormGroup from "@mui/material/FormGroup";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import { LoginContext } from "../App";
@@ -20,16 +20,21 @@ export default function Header() {
   const navigate = useNavigate();
   const [loggedIn, setLoggedIn] = useContext(LoginContext);
   const [anchorEl, setAnchorEl] = React.useState(null);
+
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
+
   const logOut = () => {
     document.cookie = "token=;expires=Thu, 01 Jan 1970 00:00:01 GMT";
+    handleClose();
     setLoggedIn(false);
   };
+
   return (
     <Box sx={{ flexGrow: 1, width: "90vw" }}>
       <AppBar style={{ background: "#2E3B55" }} position="static">
@@ -42,78 +47,51 @@ export default function Header() {
           >
             Dengue Map
           </Typography>
-          {!loggedIn && (
-            <>
-              <IconButton
-                size="large"
-                color="inherit"
-                aria-controls="menu-appbar"
-                aria-label="menu"
-                aria-haspopup="true"
-                sx={{ mr: 2 }}
-                onClick={handleMenu}
-              >
-                <MenuIcon />
-              </IconButton>
-              <Menu
-                id="menu-appbar"
-                anchorEl={anchorEl}
-                anchorOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                open={Boolean(anchorEl)}
-                onClose={handleClose}
-              >
-                <MenuItem onClick={() => navigate("signin")}>Sign In</MenuItem>
-                <MenuItem onClick={() => navigate("signup")}>Sign Up</MenuItem>
-                <MenuItem onClick={handleClose}>About</MenuItem>
-                <MenuItem onClick={handleClose}>Dengue Info</MenuItem>
-                <MenuItem onClick={handleClose}>Contact</MenuItem>
-              </Menu>
-            </>
-          )}
-          {loggedIn && (
-            <>
-              <IconButton
-                size="large"
-                color="inherit"
-                aria-controls="menu-appbar"
-                aria-label="menu"
-                aria-haspopup="true"
-                sx={{ mr: 2 }}
-                onClick={handleMenu}
-              >
-                <MenuIcon />
-              </IconButton>
-              <Menu
-                id="menu-appbar"
-                anchorEl={anchorEl}
-                anchorOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                open={Boolean(anchorEl)}
-                onClose={handleClose}
-              >
+          {/* TODO make icon common */}
+          <>
+            <IconButton
+              size="large"
+              color="inherit"
+              aria-controls="menu-appbar"
+              aria-label="menu"
+              aria-haspopup="true"
+              sx={{ mr: 2 }}
+              onClick={handleMenu}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Menu
+              id="menu-appbar"
+              anchorEl={anchorEl}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'left',
+              }}
+              open={Boolean(anchorEl)}
+              onClose={handleClose}
+            >
+              {loggedIn ? 
+              <>
                 <MenuItem onClick={handleClose}>Profile</MenuItem>
                 <MenuItem onClick={handleClose}>About</MenuItem>
                 <MenuItem onClick={handleClose}>Dengue Info</MenuItem>
                 <MenuItem onClick={handleClose}>Contact</MenuItem>
                 <MenuItem onClick={logOut}>Log Out</MenuItem>
-              </Menu>
-            </>
-          )}
+              </>: 
+              <>
+                <MenuItem onClick={() => navigate("signin")}>Sign In</MenuItem>
+                <MenuItem onClick={() => navigate("signup")}>Sign Up</MenuItem>
+                <MenuItem onClick={handleClose}>About</MenuItem>
+                <MenuItem onClick={handleClose}>Dengue Info</MenuItem>
+                <MenuItem onClick={handleClose}>Contact</MenuItem>
+              </>}
+            </Menu>
+          </>
         </Toolbar>
       </AppBar>
     </Box>

@@ -41,7 +41,7 @@ const medoptions = {
   zIndex: 1,
 };
 
-const Home = () => {
+const Home = (props) => {
   const center = {
     lat: 1.36027,
     lng: 103.851759,
@@ -55,6 +55,7 @@ const Home = () => {
   const [highRisk, setHighRisk] = React.useState([]);
   const [medRisk, setMedRisk] = React.useState([]);
   const [currentLatLng, setCurrentLatLng] = React.useState(center);
+  const [errorMessage, setErrorMessage] = React.useState(null);
   const [zoom, setZoom] = React.useState(10);
 
   const onLoad = React.useCallback(function callback(map) {
@@ -77,24 +78,20 @@ const Home = () => {
           });
         },
         (err) => {
-          this.setState({
-            errorMessage: "User denied geolocation",
-            currentLatLng: {
-              lat: this.props.center.lat,
-              lng: this.props.center.lng,
-            },
-          });
+          // setCurrentLatLng({
+          //   lat: props.center.lat,
+          //   lng: props.center.lng,
+          // });
+          setErrorMessage("User denied geolocation");
         }
       );
       setZoom(17);
     } else {
-      this.setState({
-        errorMessage: "Geolocation unavailable",
-        currentLatLng: {
-          lat: this.props.center.lat,
-          lng: this.props.center.lng,
-        },
-      });
+      // setCurrentLatLng({
+      //   lat: props.center.lat,
+      //   lng: props.center.lng,
+      // });
+      setErrorMessage("Geolocation unavailable");
     }
   };
 
