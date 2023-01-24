@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -11,8 +11,20 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import apiservices from "../../services/apiservices";
+import { withCookies } from "react-cookie";
+import moment from "moment";
+import { LoginContext } from "../../App";
+import { useNavigate } from "react-router-dom";
 
 function Copyright(props) {
+  const navigate = useNavigate();
+  const [loggedIn] = useContext(LoginContext);
+
+  useEffect(() => {
+    if (loggedIn) {
+      return navigate("/");
+    }
+  });
   return (
     <Typography
       variant="body2"
@@ -32,14 +44,13 @@ function Copyright(props) {
 
 const theme = createTheme();
 
-export default function SignInSide() {
+function SignInSide(props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState({});
-  const handleSubmit = async (event) => {
+  const [formError, setFormError] = useState({});
+  const handleSubmit = (event) => {
     event.preventDefault();
-    const result = await validateForm();
-    console.log(result);
+    validateForm();
   };
 
   const validateForm = async () => {
@@ -48,22 +59,34 @@ export default function SignInSide() {
       errors.email = "Email must not be empty";
     } else if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
       errors.email = "Please key in a valid email format";
-    } else if (!password) {
+    }
+    if (!password) {
       errors.password = "Password must not be empty";
     } else if (password.length < 5) {
       errors.password = "Password must have more than 5 characters";
     } else {
-      const dataToVerify = { email: email, password: password };
-      const result = await apiservices.signin(dataToVerify);
-      if (result.data.msg === "fail") {
-        errors.general = "Password and Email combination does not match";
+      try {
+        const dataToVerify = { email: email, password: password };
+        const response = await apiservices.signin(dataToVerify);
+        console.log(response);
+        if (!response.data.success) {
+          errors.general = response.data.msg;
+          return;
+        }
+        if (response.data.success) {
+          console.log(response.data);
+          props.cookies.set("token", response.data.token, {
+            path: "/",
+            expires: moment.unix(response.data.expiresAt).toDate(),
+          });
+          window.location.href = "/";
+        }
+      } catch (err) {
+        errors.general = "Something went wrong";
+        console.log("Error", err);
       }
     }
-    if (Object.keys(errors).length > 0) {
-      return false;
-    } else {
-      return true;
-    }
+    setFormError(errors);
   };
 
   return (
@@ -120,6 +143,7 @@ export default function SignInSide() {
                 values={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
+              <p>{formError.email}</p>
               <TextField
                 margin="normal"
                 required
@@ -132,6 +156,8 @@ export default function SignInSide() {
                 values={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
+              <p>{formError.password}</p>
+              <p>{formError.general}</p>
               <Button
                 type="submit"
                 fullWidth
@@ -140,6 +166,7 @@ export default function SignInSide() {
               >
                 Sign In
               </Button>
+
               <Grid container>
                 <Grid item xs>
                   <Link href="#" variant="body2">
@@ -160,3 +187,5 @@ export default function SignInSide() {
     </ThemeProvider>
   );
 }
+
+export default withCookies(SignInSide);

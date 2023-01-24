@@ -1,17 +1,34 @@
+import React, { useState, createContext } from "react";
 import Home from "./components/pages/Home";
 import Signin from "./components/auth/Signin";
 import Signup from "./components/auth/Signup";
-// import HomeTwo from "./components/pages/HomeTwo";
 import { Routes, Route } from "react-router-dom";
+import NoMatch from "./components/pages/NoMatch";
+import TestProfile1 from "./components/pages/Testprofile1";
+import TestProfile2 from "./components/pages/TestProfile2";
+import { authenticate } from "./components/helpers/utility";
+// import ProtectedRoute from "./components/ProtectedRoute";
+// import HomeTwo from "./components/pages/HomeTwo";
+import Layout from "./components/Layout";
 
-function App() {
+export const LoginContext = createContext();
+
+function App(props) {
+  const [loggedIn, setLoggedIn] = useState(authenticate());
   return (
     <div className="App">
-      <Routes>
-        <Route path="/" element={<Home />}></Route>
-        <Route path="/signin" element={<Signin />}></Route>
-        <Route path="/signup" element={<Signup />}></Route>
-      </Routes>
+      <LoginContext.Provider value={[loggedIn, setLoggedIn]}>
+        <Routes>
+          <Route element={<Layout />}>
+            <Route path="/" element={<Home />}></Route>
+            <Route path="/testprofile1" element={<TestProfile1 />}></Route>
+            <Route path="/testprofile2" element={<TestProfile2 />}></Route>
+          </Route>
+          <Route path="/signin" element={<Signin />}></Route>
+          <Route path="/signup" element={<Signup />}></Route>
+          <Route path="*" element={<NoMatch />}></Route>
+        </Routes>
+      </LoginContext.Provider>
     </div>
   );
 }

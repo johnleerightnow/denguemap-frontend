@@ -1,13 +1,4 @@
 import React from "react";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
-import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
-import CssBaseline from "@mui/material/CssBaseline";
-import Container from "@mui/material/Container";
 import apiService from "../../services/apiservices";
 
 import { GoogleMap, Polygon, useJsApiLoader } from "@react-google-maps/api";
@@ -127,39 +118,16 @@ const Home = () => {
 
   return isLoaded ? (
     <React.Fragment>
-      <CssBaseline />
-      <Container maxWidth={false}>
-        <Box sx={{ flexGrow: 1, width: "90vw" }}>
-          <AppBar style={{ background: "#2E3B55" }} position="static">
-            <Toolbar>
-              <IconButton
-                size="large"
-                edge="start"
-                color="inherit"
-                aria-label="menu"
-                sx={{ mr: 2 }}
-              >
-                <MenuIcon />
-              </IconButton>
-              <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                News
-              </Typography>
-              <Button color="inherit">Login</Button>
-            </Toolbar>
-          </AppBar>
-          <GoogleMap
-            mapContainerStyle={containerStyle}
-            center={currentLatLng}
-            zoom={zoom}
-            onLoad={onLoad}
-            onUnmount={onUnmount}
-          >
-            <Polygon onLoad={onLoad} paths={highRisk} options={options} />
-            <Polygon onLoad={onLoad} paths={medRisk} options={medoptions} />
-          </GoogleMap>
-        </Box>
-        <Box sx={{ bgcolor: "#cfe8fc", height: "10vh", width: "90vw" }} />
-      </Container>
+      <GoogleMap
+        mapContainerStyle={containerStyle}
+        center={currentLatLng}
+        zoom={zoom}
+        onLoad={onLoad}
+        onUnmount={onUnmount}
+      >
+        <Polygon onLoad={onLoad} paths={highRisk} options={options} />
+        <Polygon onLoad={onLoad} paths={medRisk} options={medoptions} />
+      </GoogleMap>
     </React.Fragment>
   ) : (
     <></>

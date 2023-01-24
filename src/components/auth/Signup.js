@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -16,7 +16,8 @@ import LocationOnIcon from "@mui/icons-material/LocationOn";
 import parse from "autosuggest-highlight/parse";
 import { debounce } from "@mui/material/utils";
 import { geocodeByAddress, getLatLng } from "react-places-autocomplete";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
+import { LoginContext } from "../../App";
 
 function Copyright(props) {
   return (
@@ -55,6 +56,14 @@ function loadScript(src, position, id) {
 const autocompleteService = { current: null };
 
 export default function SignUp() {
+  const navigate = useNavigate();
+  const [loggedIn, setLoggedIn] = useContext(LoginContext);
+
+  useEffect(() => {
+    if (loggedIn) {
+      return navigate("/");
+    }
+  });
   const initialValues = {
     name: "",
     email: "",
