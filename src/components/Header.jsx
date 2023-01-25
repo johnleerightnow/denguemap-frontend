@@ -64,32 +64,38 @@ export default function Header() {
               id="menu-appbar"
               anchorEl={anchorEl}
               anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
+                vertical: "bottom",
+                horizontal: "left",
               }}
               keepMounted
               transformOrigin={{
-                vertical: 'top',
-                horizontal: 'left',
+                vertical: "top",
+                horizontal: "left",
               }}
               open={Boolean(anchorEl)}
               onClose={handleClose}
             >
-              {loggedIn ? 
-              <>
-                <MenuItem onClick={handleClose}>Profile</MenuItem>
-                <MenuItem onClick={handleClose}>About</MenuItem>
-                <MenuItem onClick={handleClose}>Dengue Info</MenuItem>
-                <MenuItem onClick={handleClose}>Contact</MenuItem>
-                <MenuItem onClick={logOut}>Log Out</MenuItem>
-              </>: 
-              <>
-                <MenuItem onClick={() => navigate("signin")}>Sign In</MenuItem>
-                <MenuItem onClick={() => navigate("signup")}>Sign Up</MenuItem>
-                <MenuItem onClick={handleClose}>About</MenuItem>
-                <MenuItem onClick={handleClose}>Dengue Info</MenuItem>
-                <MenuItem onClick={handleClose}>Contact</MenuItem>
-              </>}
+              {loggedIn ? (
+                <div>
+                  <MenuItem onClick={handleClose}>Profile</MenuItem>
+                  <MenuItem onClick={handleClose}>About</MenuItem>
+                  <MenuItem onClick={handleClose}>Dengue Info</MenuItem>
+                  <MenuItem onClick={handleClose}>Contact</MenuItem>
+                  <MenuItem onClick={logOut}>Log Out</MenuItem>
+                </div>
+              ) : (
+                <div>
+                  <MenuItem onClick={() => navigate("signin")}>
+                    Sign In
+                  </MenuItem>
+                  <MenuItem onClick={() => navigate("signup")}>
+                    Sign Up
+                  </MenuItem>
+                  <MenuItem onClick={handleClose}>About</MenuItem>
+                  <MenuItem onClick={handleClose}>Dengue Info</MenuItem>
+                  <MenuItem onClick={handleClose}>Contact</MenuItem>
+                </div>
+              )}
             </Menu>
           </>
         </Toolbar>

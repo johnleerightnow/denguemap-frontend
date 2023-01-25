@@ -53,7 +53,7 @@ function loadScript(src, position, id) {
   position.appendChild(script);
 }
 
-const autocompleteService = { current: null };
+const autocompleteService = { current: 730512 };
 
 export default function SignUp() {
   const navigate = useNavigate();
@@ -80,15 +80,17 @@ export default function SignUp() {
   // const [autoValue, setAutoValue] = useState(null);
 
   if (typeof window !== "undefined" && !loaded.current) {
-    if (!document.querySelector("#google-maps")) {
-      loadScript(
-        `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places`,
-        document.querySelector("head"),
-        "google-maps"
-      );
+    if (window && window.google) {
+      loaded.current = true;
+    } else {
+      if (!document.querySelector("#google-maps")) {
+        loadScript(
+          `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places`,
+          document.querySelector("head"),
+          "google-maps"
+        );
+      }
     }
-
-    loaded.current = true;
   }
 
   const fetch = React.useMemo(
@@ -305,36 +307,6 @@ export default function SignUp() {
                 />
               </Grid>
               <p>{error.password}</p>
-              {/*  <Grid item xs={12}>
-                <GooglePlacesAutocomplete
-                  apiKey="AIzaSyBa_goqnYBs-H6HFzGKGIuiWpuBexWyMcI"
-                  autocompletionRequest={{
-                    componentRestrictions: { country: ["sg"] },
-                  }}
-                  selectProps={{
-                    formValues,
-                    onChange: setFormValues,
-                    onSelect: handleSelect(formValues.address),
-                    placeholder: "Address",
-                  }}
-                  name="address"
-                  label="Address"
-                  type="address"
-                  id="address"
-                />
-              </Grid> */}
-              {/* <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  value={values.address}
-                  onChange={handleInputChange}
-                  name="address"
-                  label="Address"
-                  type="address"
-                  id="address"
-                />
-              </Grid> */}
               <Grid item xs={12}>
                 <Autocomplete
                   id="google-map-demo"

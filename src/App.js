@@ -7,8 +7,7 @@ import NoMatch from "./components/pages/NoMatch";
 import TestProfile1 from "./components/pages/Testprofile1";
 import TestProfile2 from "./components/pages/TestProfile2";
 import { authenticate } from "./components/helpers/utility";
-// import ProtectedRoute from "./components/ProtectedRoute";
-// import HomeTwo from "./components/pages/HomeTwo";
+import HomeTwo from "./components/pages/HomeTwo";
 import Layout from "./components/Layout";
 
 export const LoginContext = createContext();

@@ -1,54 +1,43 @@
 import React from "react";
-import { GoogleMap, Polygon, LoadScript } from "@react-google-maps/api";
+import { GoogleMap, useJsApiLoader } from "@react-google-maps/api";
+import CircularProgress from "@mui/material/CircularProgress";
 
-const containerStyle = {
-  width: "1200px",
-  height: "700px",
-};
+const google = window.google;
 
-const center = {
-  lat: 24.886,
-  lng: -70.268,
-};
+// const options = {
+//   zoomControlOptions: {
+//     position: google.maps.ControlPosition.RIGHT_CENTER, // 'right-center' ,
+//     // ...otherOptions
+//   },
+// };
 
-const onLoad = (polygon) => {
-  console.log("polygon: ", polygon);
-};
+const HomeTwo = () => {
+  const { isLoaded, loadError } = useJsApiLoader({
+    googleMapsApiKey: process.env.REACT_APP_GOOGLE_API, // ,
+    // ...otherOptions
+  });
 
-const paths = [
-  { lat: 25.774, lng: -80.19 },
-  { lat: 18.466, lng: -66.118 },
-  { lat: 32.321, lng: -64.757 },
-  { lat: 25.774, lng: -80.19 },
-];
-
-function MyComponent() {
-  const options = {
-    fillColor: "lightblue",
-    fillOpacity: 1,
-    strokeColor: "red",
-    strokeOpacity: 1,
-    strokeWeight: 2,
-    clickable: false,
-    draggable: false,
-    editable: false,
-    geodesic: false,
-    zIndex: 1,
-  };
-  return (
-    <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_API}>
-      <GoogleMap
-        id="marker-example"
-        mapContainerStyle={containerStyle}
-        center={center}
-        zoom={7}
-      >
-        <Polygon onLoad={onLoad} paths={paths} options={options} />
-        {/* Child components, such as markers, info windows, etc. */}
-        <></>
+  const Map = () => {
+    // wrapping to a function is useful in case you want to access `window.google`
+    // to eg. setup options or create latLng object, it won't be available otherwise
+    // feel free to render directly if you don't need that
+    const onLoad = React.useCallback(function onLoad(mapInstance) {
+      // do something with map Instance
+    });
+    return (
+      <GoogleMap onLoad={onLoad}>
+        {
+          // ...Your map components
+        }
       </GoogleMap>
-    </LoadScript>
-  );
-}
+    );
+  };
 
-export default React.memo(MyComponent);
+  if (loadError) {
+    return <div>Map cannot be loaded right now, sorry.</div>;
+  }
+
+  return isLoaded ? Map() : <CircularProgress />;
+};
+
+export default HomeTwo;

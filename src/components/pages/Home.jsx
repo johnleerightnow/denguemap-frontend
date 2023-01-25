@@ -1,19 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import apiService from "../../services/apiservices";
-
+import Grid from "@mui/material/Grid";
+import SearchBar from "../SearchBar";
 import { GoogleMap, Polygon, useJsApiLoader } from "@react-google-maps/api";
 
 const containerStyle = {
-  width: "90vw",
+  width: "70vw",
   height: "80vh",
 };
-
-// const paths = [
-//   { lat: 1.37129127901326, lng: 103.896797104678 },
-//   { lat: 1.3703341378617, lng: 103.89756024755 },
-//   { lat: 1.37070261656649, lng: 103.898052393435 },
-//   { lat: 1.3703777867222, lng: 103.898335898822 },
-// ];
 
 const options = {
   fillColor: "red",
@@ -42,6 +36,7 @@ const medoptions = {
 };
 
 const Home = (props) => {
+  const [libraries] = useState(["places"]);
   const center = {
     lat: 1.36027,
     lng: 103.851759,
@@ -49,6 +44,7 @@ const Home = (props) => {
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_API,
+    libraries,
   });
 
   const [map, setMap] = React.useState(null);
@@ -78,19 +74,11 @@ const Home = (props) => {
           });
         },
         (err) => {
-          // setCurrentLatLng({
-          //   lat: props.center.lat,
-          //   lng: props.center.lng,
-          // });
           setErrorMessage("User denied geolocation");
         }
       );
       setZoom(17);
     } else {
-      // setCurrentLatLng({
-      //   lat: props.center.lat,
-      //   lng: props.center.lng,
-      // });
       setErrorMessage("Geolocation unavailable");
     }
   };
@@ -114,21 +102,28 @@ const Home = (props) => {
   }, []);
 
   return isLoaded ? (
-    <React.Fragment>
-      <GoogleMap
-        mapContainerStyle={containerStyle}
-        center={currentLatLng}
-        zoom={zoom}
-        onLoad={onLoad}
-        onUnmount={onUnmount}
-      >
-        <Polygon onLoad={onLoad} paths={highRisk} options={options} />
-        <Polygon onLoad={onLoad} paths={medRisk} options={medoptions} />
-      </GoogleMap>
-    </React.Fragment>
+    <>
+      <Grid container>
+        <Grid>
+          <GoogleMap
+            mapContainerStyle={containerStyle}
+            center={currentLatLng}
+            zoom={zoom}
+            onLoad={onLoad}
+            onUnmount={onUnmount}
+          >
+            <Polygon onLoad={onLoad} paths={highRisk} options={options} />
+            <Polygon onLoad={onLoad} paths={medRisk} options={medoptions} />
+          </GoogleMap>
+        </Grid>
+        <Grid>
+          <SearchBar />
+        </Grid>
+      </Grid>
+    </>
   ) : (
     <></>
   );
 };
 
-export default Home;
+export default React.memo(Home);

@@ -1,4 +1,3 @@
-// import { withCookies } from "react-cookie";
 import Cookies from "universal-cookie";
 
 export const authenticate = () => {
