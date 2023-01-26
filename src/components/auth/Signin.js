@@ -17,14 +17,6 @@ import { LoginContext } from "../../App";
 import { useNavigate } from "react-router-dom";
 
 function Copyright(props) {
-  const navigate = useNavigate();
-  const [loggedIn] = useContext(LoginContext);
-
-  useEffect(() => {
-    if (loggedIn) {
-      return navigate("/");
-    }
-  });
   return (
     <Typography
       variant="body2"
@@ -45,32 +37,51 @@ function Copyright(props) {
 const theme = createTheme();
 
 function SignInSide(props) {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [formError, setFormError] = useState({});
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    validateForm();
-  };
+  const [loggedIn] = useContext(LoginContext);
+
+  useEffect(() => {
+    if (loggedIn) {
+      return navigate("/");
+    }
+  });
 
   const validateForm = async () => {
     let errors = {};
     if (!email) {
       errors.email = "Email must not be empty";
     } else if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
+      console.log("elseifemail");
       errors.email = "Please key in a valid email format";
     }
     if (!password) {
       errors.password = "Password must not be empty";
     } else if (password.length < 5) {
       errors.password = "Password must have more than 5 characters";
+    }
+    setFormError(errors);
+    if (Object.keys(errors).length > 0) {
+      return false;
     } else {
+      return true;
+    }
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const valid = await validateForm();
+    if (valid) {
+      let errors = {};
       try {
         const dataToVerify = { email: email, password: password };
         const response = await apiservices.signin(dataToVerify);
         console.log(response);
         if (!response.data.success) {
           errors.general = response.data.msg;
+          setFormError(errors);
           return;
         }
         if (response.data.success) {
@@ -83,10 +94,10 @@ function SignInSide(props) {
         }
       } catch (err) {
         errors.general = "Something went wrong";
+        setFormError(errors);
         console.log("Error", err);
       }
     }
-    setFormError(errors);
   };
 
   return (
