@@ -2,14 +2,22 @@ import React, { useState } from "react";
 import apiService from "../../services/apiservices";
 import Grid from "@mui/material/Grid";
 import SearchBar from "../SearchBar";
-import { GoogleMap, Polygon, useJsApiLoader } from "@react-google-maps/api";
+import Box from "@mui/material/Box";
+
+import {
+  GoogleMap,
+  Polygon,
+  useJsApiLoader,
+  Marker,
+  Circle,
+} from "@react-google-maps/api";
 
 const containerStyle = {
   width: "70vw",
   height: "80vh",
 };
 
-const options = {
+const highoptions = {
   fillColor: "red",
   fillOpacity: 0.35,
   strokeColor: "red",
@@ -33,6 +41,15 @@ const medoptions = {
   editable: false,
   geodesic: false,
   zIndex: 1,
+};
+
+const circleoptions = {
+  radius: 150,
+  strokeColor: "#0000FF",
+  strokeOpacity: 0.9,
+  strokeWeight: 2,
+  fillColor: "#0000FF",
+  fillOpacity: 0.2,
 };
 
 const Home = (props) => {
@@ -101,6 +118,11 @@ const Home = (props) => {
     setMap(null);
   }, []);
 
+  const handleNewAddress = (address) => {
+    setCurrentLatLng(address.frontlatlng);
+    apiService.getNearestRiskAreaDistance(address);
+  };
+
   return isLoaded ? (
     <>
       <Grid container>
@@ -112,13 +134,17 @@ const Home = (props) => {
             onLoad={onLoad}
             onUnmount={onUnmount}
           >
-            <Polygon onLoad={onLoad} paths={highRisk} options={options} />
+            <Marker position={currentLatLng} />
+            <Circle center={currentLatLng} options={circleoptions} />
+            <Polygon onLoad={onLoad} paths={highRisk} options={highoptions} />
             <Polygon onLoad={onLoad} paths={medRisk} options={medoptions} />
           </GoogleMap>
         </Grid>
-        <Grid>
-          <SearchBar />
-        </Grid>
+        <Box>
+          <Grid sx={{ mt: 3 }}>
+            <SearchBar newaddress={handleNewAddress} />
+          </Grid>
+        </Box>
       </Grid>
     </>
   ) : (

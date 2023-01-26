@@ -53,7 +53,7 @@ function loadScript(src, position, id) {
   position.appendChild(script);
 }
 
-const autocompleteService = { current: 730512 };
+const autocompleteService = { current: null };
 
 export default function SignUp() {
   const navigate = useNavigate();
@@ -77,7 +77,6 @@ export default function SignUp() {
   const [options, setOptions] = React.useState([]);
   const [redirect, setRedirect] = useState(false);
   const loaded = React.useRef(false);
-  // const [autoValue, setAutoValue] = useState(null);
 
   if (typeof window !== "undefined" && !loaded.current) {
     if (window && window.google) {
@@ -169,7 +168,6 @@ export default function SignUp() {
     } else {
       await apiservices.checkemail(formValues).then((response) => {
         if (response && response.data.msg === "Email already exists") {
-          console.log("duplicate email found");
           errors.email = response.data.msg;
         }
       });

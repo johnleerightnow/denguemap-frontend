@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const baseURL = "http://localhost:5001/api/v1";
+const baseURL =
+  "http://ec2-18-181-96-189.ap-northeast-1.compute.amazonaws.com:5001/api/v1";
 
 const instance = axios.create({ baseURL: baseURL, timeout: 10000 });
 
@@ -19,6 +20,9 @@ const dengueClustersApi = {
   },
   signin: (formData) => {
     return instance.post("/signin", formData);
+  },
+  getNearestRiskAreaDistance: (formData) => {
+    return instance.post("/getNearestRiskAreaDistance", formData);
   },
 };
 
