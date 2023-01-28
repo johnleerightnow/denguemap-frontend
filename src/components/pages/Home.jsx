@@ -141,6 +141,19 @@ const Home = (props) => {
     console.log("searchResult", searchResult);
   };
 
+  /**
+   * setSearchResult(finalResults.data)
+   * This line works in async manner, so when you use setState to set any state,
+   * at that time a new thread is created and for that
+   * and rest of your synchronous code runs.
+   * Here:
+   * LN#139 was set to run for some later time, but  LN#141 ran before that,
+   * and that's the reason why we don't see expected results on LN#141.
+   */
+  React.useEffect(() => {
+    console.log("searchResult", searchResult);
+  }, [searchResult]);
+
   return isLoaded ? (
     <>
       <Grid container>
