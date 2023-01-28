@@ -54,7 +54,6 @@ function SignInSide(props) {
     if (!email) {
       errors.email = "Email must not be empty";
     } else if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
-      console.log("elseifemail");
       errors.email = "Please key in a valid email format";
     }
     if (!password) {

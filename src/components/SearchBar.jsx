@@ -106,14 +106,6 @@ const SearchBar = (props) => {
           return getLatLng(results[0]);
         })
         .then((res) => {
-          // console.log({
-          //   latLng: res.lat + "," + res.lng,
-          //   obj: {
-          //     latLng: res.lat + "," + res.lng,
-          //     riskArea: "High",
-          //     location: address,
-          //   },
-          // });
           props.newaddress({
             latLng: res.lat + "," + res.lng,
             frontlatlng: res,

@@ -1,7 +1,6 @@
 import axios from "axios";
 
-const baseURL =
-  "http://ec2-18-181-96-189.ap-northeast-1.compute.amazonaws.com:5001/api/v1";
+const baseURL = process.env.REACT_APP_BASE_URL;
 
 const instance = axios.create({ baseURL: baseURL, timeout: 10000 });
 

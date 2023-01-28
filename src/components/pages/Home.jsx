@@ -69,6 +69,7 @@ const Home = (props) => {
   const [medRisk, setMedRisk] = React.useState([]);
   const [currentLatLng, setCurrentLatLng] = React.useState(center);
   const [errorMessage, setErrorMessage] = React.useState(null);
+  const [searchResult, setSearchResult] = useState({});
   const [zoom, setZoom] = React.useState(10);
 
   const onLoad = React.useCallback(function callback(map) {
@@ -118,9 +119,26 @@ const Home = (props) => {
     setMap(null);
   }, []);
 
-  const handleNewAddress = (address) => {
+  const handleNewAddress = async (address) => {
     setCurrentLatLng(address.frontlatlng);
-    apiService.getNearestRiskAreaDistance(address);
+    // await apiService
+    //   .getNearestRiskAreaDistance(address)
+    //   .then((results) => {
+    //     return results.data;
+    //     //setSearchResult(results.data)
+    //     // console.log("results.data", results.data);
+    //     // console.log("searchResult", searchResult);
+    //   })
+    //   .then((results2) => {
+    //     console.log(results2);
+    //     setSearchResult(results2);
+    //   })
+    //   .catch((err) => console.log("search err", err));
+    const finalResults = await apiService.getNearestRiskAreaDistance(address);
+    console.log("f", finalResults);
+    setSearchResult(finalResults.data);
+
+    console.log("searchResult", searchResult);
   };
 
   return isLoaded ? (
@@ -143,6 +161,13 @@ const Home = (props) => {
         <Box>
           <Grid sx={{ mt: 3 }}>
             <SearchBar newaddress={handleNewAddress} />
+          </Grid>
+          <Grid>
+            {searchResult.isWithinRiskArea ? (
+              <div>You estimated to be within of a risk area dengue zone.</div>
+            ) : (
+              <div> no results</div>
+            )}
           </Grid>
         </Box>
       </Grid>
