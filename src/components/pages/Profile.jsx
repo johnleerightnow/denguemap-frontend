@@ -144,7 +144,7 @@ export default function Profile() {
 
   useEffect(() => {
     if (!loggedIn) {
-      return navigate("/signin");
+      navigate("/signin");
     }
     if (loggedIn) {
       apiservices.userprofile({ token: token }).then((result) => {
