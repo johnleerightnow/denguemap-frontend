@@ -182,6 +182,8 @@ const Home = (props) => {
                 {searchResult.minimumDistance} metres of a{" "}
                 {searchResult.riskAreaType.toLowerCase()} risk dengue cluster.
               </div>
+            ) : searchResult.riskAreaType === "low" ? (
+              <div>You are more than 150 metres from a dengue cluster</div>
             ) : (
               ""
             )}

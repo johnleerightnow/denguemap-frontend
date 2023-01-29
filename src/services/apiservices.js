@@ -26,6 +26,9 @@ const dengueClustersApi = {
   userprofile: (token) => {
     return instance.post("/userprofile", token);
   },
+  changepassword: (tokennpass) => {
+    return instance.post("/changepassword", tokennpass);
+  },
 };
 
 export default dengueClustersApi;
