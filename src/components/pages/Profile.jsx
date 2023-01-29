@@ -20,7 +20,7 @@ import Cookies from 'universal-cookie';
 // eslint-disable-next-line import/no-cycle
 import { LoginContext } from '../../App';
 import apiservices from '../../services/apiservices';
-import ChangePassword from "../ChangePass";
+import ChangePassword from '../ChangePass';
 
 function Copyright(props) {
   return (
@@ -66,8 +66,8 @@ export default function Profile() {
   const token = cookies.get('token');
   const [loggedIn, setLoggedIn] = useContext(LoginContext);
   const initialValues = {
-    name: "",
-    email: "",
+    name: '',
+    email: '',
   };
   const [formValues, setFormValues] = useState(initialValues);
   const [error, setFormError] = useState({});
@@ -143,7 +143,7 @@ export default function Profile() {
 
   useEffect(() => {
     if (!loggedIn) {
-      return navigate('/signin');
+      navigate('/signin');
     }
     if (loggedIn) {
       apiservices.userprofile({ token }).then((result) => {
@@ -158,8 +158,8 @@ export default function Profile() {
 
   useEffect(() => {
     console.log(formValues);
-    console.log("inputValue", inputValue);
-    console.log("value", value);
+    console.log('inputValue', inputValue);
+    console.log('value', value);
   }, [value, formValues, inputValue]);
 
   const validateInput = async (inputs) => {
