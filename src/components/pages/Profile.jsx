@@ -18,6 +18,7 @@ import { debounce } from "@mui/material/utils";
 import { geocodeByAddress, getLatLng } from "react-places-autocomplete";
 import { Navigate, useNavigate } from "react-router-dom";
 import { LoginContext } from "../../App";
+import Cookies from "universal-cookie";
 
 function Copyright(props) {
   return (
@@ -55,21 +56,16 @@ function loadScript(src, position, id) {
 
 const autocompleteService = { current: null };
 
-export default function SignUp() {
+export default function Profile() {
   const navigate = useNavigate();
+  const cookies = new Cookies();
+  const token = cookies.get("token");
   const [loggedIn, setLoggedIn] = useContext(LoginContext);
-
-  useEffect(() => {
-    if (loggedIn) {
-      return navigate("/");
-    }
-  });
   const initialValues = {
     name: "",
     email: "",
     password: "",
   };
-
   const [formValues, setFormValues] = useState(initialValues);
   const [error, setFormError] = useState({});
   const [value, setValue] = React.useState(null);
@@ -84,7 +80,7 @@ export default function SignUp() {
     } else {
       if (!document.querySelector("#google-maps")) {
         loadScript(
-          `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places`,
+          `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places&callback=Function.prototype`,
           document.querySelector("head"),
           "google-maps"
         );
@@ -132,6 +128,7 @@ export default function SignUp() {
         setOptions(newOptions);
       }
     });
+    console.log(value);
 
     return () => {
       active = false;
@@ -145,6 +142,24 @@ export default function SignUp() {
       [name]: value,
     });
   };
+
+  useEffect(() => {
+    if (!loggedIn) {
+      return navigate("/signin");
+    }
+    if (loggedIn) {
+      apiservices.userprofile({ token: token }).then((result) => {
+        setFormValues({
+          email: result.data.email,
+          name: result.data.name,
+          password: "Password",
+        });
+
+        setValue({ description: result.data.address });
+      });
+      console.log(formValues);
+    }
+  }, []);
 
   const validateInput = async (inputs) => {
     let errors = {};
@@ -207,28 +222,6 @@ export default function SignUp() {
     return <Navigate replace to="/signin" />;
   }
 
-  /*  const handleSelect = (address) => {
-    // console.log("address", address.label);
-    if (address) {
-      geocodeByAddress(address.label)
-        .then((results) => getLatLng(results[0]))
-        .then(({ lat, lng }) =>
-          console.log("Successfully got latitude and longitude", { lat, lng })
-        );
-    }
-  }; */
-
-  /* should i place function outside of the main component or inside? */
-  /* Should I use this? */
-  /* const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
-  }; */
-
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
@@ -245,7 +238,7 @@ export default function SignUp() {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign up
+            Profile
           </Typography>
           <Box
             component="form"
@@ -268,16 +261,6 @@ export default function SignUp() {
                 />
               </Grid>
               <p>{error.name}</p>
-              {/* <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  fullWidth
-                  id="lastName"
-                  label="Last Name"
-                  name="lastName"
-                  autoComplete="family-name"
-                />
-              </Grid> */}
               <Grid item xs={12}>
                 <TextField
                   required

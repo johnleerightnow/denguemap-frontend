@@ -71,7 +71,9 @@ export default function Header() {
             >
               {loggedIn ? (
                 <div>
-                  <MenuItem onClick={handleClose}>Profile</MenuItem>
+                  <MenuItem onClick={() => navigate("profile")}>
+                    Profile
+                  </MenuItem>
                   <MenuItem onClick={handleClose}>About</MenuItem>
                   <MenuItem onClick={handleClose}>Dengue Info</MenuItem>
                   <MenuItem onClick={handleClose}>Contact</MenuItem>

@@ -23,6 +23,9 @@ const dengueClustersApi = {
   getNearestRiskAreaDistance: (formData) => {
     return instance.post("/getNearestRiskAreaDistance", formData);
   },
+  userprofile: (token) => {
+    return instance.post("/userprofile", token);
+  },
 };
 
 export default dengueClustersApi;

@@ -175,11 +175,15 @@ const Home = (props) => {
           <Grid sx={{ mt: 3 }}>
             <SearchBar newaddress={handleNewAddress} />
           </Grid>
-          <Grid>
+          <Grid sx={{ mt: 3 }}>
             {searchResult.isWithinRiskArea ? (
-              <div>You estimated to be within of a risk area dengue zone.</div>
+              <div>
+                Search area is estimated to be within{" "}
+                {searchResult.minimumDistance} metres of a{" "}
+                {searchResult.riskAreaType.toLowerCase()} risk dengue cluster.
+              </div>
             ) : (
-              <div> no results</div>
+              ""
             )}
           </Grid>
         </Box>
