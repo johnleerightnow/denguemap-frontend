@@ -87,7 +87,7 @@ export default function Header() {
   };
 
   return (
-    <Box sx={{ flexGrow: 1, width: '90vw' }}>
+    <Box sx={{ flexGrow: 1, width: '100vw' }}>
       <AppBar style={{ background: '#2E3B55' }} position="static">
         <Toolbar>
           <Typography
