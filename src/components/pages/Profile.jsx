@@ -20,6 +20,7 @@ import Cookies from 'universal-cookie';
 // eslint-disable-next-line import/no-cycle
 import { LoginContext } from '../../App';
 import apiservices from '../../services/apiservices';
+import ChangePassword from "../ChangePass";
 
 function Copyright(props) {
   return (
@@ -65,9 +66,8 @@ export default function Profile() {
   const token = cookies.get('token');
   const [loggedIn, setLoggedIn] = useContext(LoginContext);
   const initialValues = {
-    name: '',
-    email: '',
-    password: '',
+    name: "",
+    email: "",
   };
   const [formValues, setFormValues] = useState(initialValues);
   const [error, setFormError] = useState({});
@@ -127,7 +127,6 @@ export default function Profile() {
         setOptions(newOptions);
       }
     });
-    console.log(value);
 
     return () => {
       active = false;
@@ -151,14 +150,17 @@ export default function Profile() {
         setFormValues({
           email: result.data.email,
           name: result.data.name,
-          password: 'Password',
         });
-
         setValue({ description: result.data.address });
       });
-      console.log(formValues);
     }
   }, []);
+
+  useEffect(() => {
+    console.log(formValues);
+    console.log("inputValue", inputValue);
+    console.log("value", value);
+  }, [value, formValues, inputValue]);
 
   const validateInput = async (inputs) => {
     const errors = {};
@@ -167,11 +169,6 @@ export default function Profile() {
     }
     if (!value) {
       errors.address = 'Address must not be empty';
-    }
-    if (!inputs.password) {
-      errors.password = 'Password must not be empty';
-    } else if (inputs.password.length < 5) {
-      errors.password = 'Password must not be less than 5 characters';
     }
     if (!inputs.email) {
       errors.email = 'Email must not be empty';
@@ -247,15 +244,14 @@ export default function Profile() {
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <TextField
-                  values={formValues.name}
-                  onChange={handleInputChange}
-                  autoComplete="given-name"
-                  name="name"
                   required
                   fullWidth
                   id="name"
+                  value={formValues.name}
                   label="Name"
-                  autoFocus
+                  onChange={handleInputChange}
+                  name="name"
+                  autoComplete="given-name"
                 />
               </Grid>
               <p>{error.name}</p>
@@ -272,20 +268,7 @@ export default function Profile() {
                 />
               </Grid>
               <p>{error.email}</p>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  values={formValues.password}
-                  onChange={handleInputChange}
-                  name="password"
-                  label="Password"
-                  type="password"
-                  id="password"
-                  autoComplete="new-password"
-                />
-              </Grid>
-              <p>{error.password}</p>
+
               <Grid item xs={12}>
                 <Autocomplete
                   id="google-map-demo"
@@ -359,24 +342,21 @@ export default function Profile() {
                   }}
                 />
               </Grid>
-
               <p>{error.address}</p>
+              <Grid item xs={12}>
+                <ChangePassword />
+              </Grid>
+              <p>{error.password}</p>
             </Grid>
+
             <Button
               type="submit"
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Sign Up
+              Save
             </Button>
-            <Grid container justifyContent="flex-end">
-              <Grid item>
-                <Link href="#" variant="body2">
-                  Already have an account? Sign in
-                </Link>
-              </Grid>
-            </Grid>
           </Box>
         </Box>
         <Copyright sx={{ mt: 5 }} />
