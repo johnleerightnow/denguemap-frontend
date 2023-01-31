@@ -81,7 +81,28 @@ export default function Profile() {
   const [redirect, setRedirect] = useState(false);
   const loaded = React.useRef(false);
   const [checked, setChecked] = React.useState(true);
+  const [dbValues, setDbValues] = React.useState(null);
   const [disabled, setDisabled] = React.useState(true);
+
+  const enableIfUserChanged = () => {
+    /* Api call has successfully returned the fromValues */
+    if(dbValues) {
+      /* User made a change */
+      console.log({dbValues, formValues})
+      if (JSON.stringify({name: dbValues.name, email: dbValues.email, checked: dbValues.checked}) 
+        !== 
+        JSON.stringify({name: formValues.name, email: formValues.email, checked})) {
+        setDisabled(false);
+      }
+      /* User did not change anything */
+      else {
+        setDisabled(true);
+      }
+    }
+    else {
+      setDisabled(true);
+    }
+  }
 
   if (typeof window !== "undefined" && !loaded.current) {
     if (window && window.google) {
@@ -148,11 +169,8 @@ export default function Profile() {
   };
 
   useEffect(() => {
-    // console.log("value", value);
-    console.log("checked", checked);
-    // console.log("formValues", formValues);
-    // setDisabled(false);
-  }, [checked]);
+    enableIfUserChanged();
+  }, [formValues, value, checked]);
 
   useEffect(() => {
     if (!loggedIn) {
@@ -160,11 +178,20 @@ export default function Profile() {
     }
     if (loggedIn) {
       apiservices.userprofile({ token }).then((result) => {
-        setFormValues({
-          email: result.data.email,
-          name: result.data.name,
+        const {email, name, fulladdress} = result.data;
+        setDbValues({
+          email,
+          name,
+          fulladdress,
+          // TODO pick from DB later
+          checked: true,
         });
-        setValue(result.data.fulladdress);
+
+        setFormValues({
+          email,
+          name,
+        });
+        setValue(fulladdress);
       });
     }
   }, []);
