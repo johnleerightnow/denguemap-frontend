@@ -10,29 +10,30 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import apiservices from "../../services/apiservices";
 import Autocomplete from "@mui/material/Autocomplete";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import parse from "autosuggest-highlight/parse";
 import { debounce } from "@mui/material/utils";
 import { geocodeByAddress, getLatLng } from "react-places-autocomplete";
 import { Navigate, useNavigate } from "react-router-dom";
+import apiservices from "../../services/apiservices";
+// eslint-disable-next-line import/no-cycle
 import { LoginContext } from "../../App";
 
 function Copyright(props) {
   return (
     <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
+      variant='body2'
+      color='text.secondary'
+      align='center'
+      // eslint-disable-next-line react/jsx-props-no-spreading
       {...props}
     >
       {"Copyright © "}
-      <Link color="inherit" href={process.env.REACT_APP_COPYRIGHT_URL}>
+      <Link color='inherit' href={process.env.REACT_APP_COPYRIGHT_URL}>
         DengueMap
       </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
+      {new Date().getFullYear()}.
     </Typography>
   );
 }
@@ -61,7 +62,7 @@ export default function SignUp() {
 
   useEffect(() => {
     if (loggedIn) {
-      return navigate("/");
+      navigate("/");
     }
   });
   const initialValues = {
@@ -81,14 +82,12 @@ export default function SignUp() {
   if (typeof window !== "undefined" && !loaded.current) {
     if (window && window.google) {
       loaded.current = true;
-    } else {
-      if (!document.querySelector("#google-maps")) {
-        loadScript(
-          `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places`,
-          document.querySelector("head"),
-          "google-maps"
-        );
-      }
+    } else if (!document.querySelector("#google-maps")) {
+      loadScript(
+        `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places`,
+        document.querySelector("head"),
+        "google-maps"
+      );
     }
   }
 
@@ -195,6 +194,7 @@ export default function SignUp() {
           let finalResult = {
             ...formValues,
             address: value.description,
+            fulladdress: value,
             latLng: result2,
           };
           apiservices.signup(finalResult);
@@ -204,7 +204,7 @@ export default function SignUp() {
   };
 
   if (redirect) {
-    return <Navigate replace to="/signin" />;
+    return <Navigate replace to='/signin' />;
   }
 
   /*  const handleSelect = (address) => {
@@ -231,7 +231,7 @@ export default function SignUp() {
 
   return (
     <ThemeProvider theme={theme}>
-      <Container component="main" maxWidth="xs">
+      <Container component='main' maxWidth='xs'>
         <CssBaseline />
         <Box
           sx={{
@@ -244,11 +244,11 @@ export default function SignUp() {
           <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
             <LockOutlinedIcon />
           </Avatar>
-          <Typography component="h1" variant="h5">
+          <Typography component='h1' variant='h5'>
             Sign up
           </Typography>
           <Box
-            component="form"
+            component='form'
             noValidate
             onSubmit={handleSubmit}
             sx={{ mt: 3 }}
@@ -258,12 +258,12 @@ export default function SignUp() {
                 <TextField
                   values={formValues.name}
                   onChange={handleInputChange}
-                  autoComplete="given-name"
-                  name="name"
+                  autoComplete='given-name'
+                  name='name'
                   required
                   fullWidth
-                  id="name"
-                  label="Name"
+                  id='name'
+                  label='Name'
                   autoFocus
                 />
               </Grid>
@@ -282,12 +282,12 @@ export default function SignUp() {
                 <TextField
                   required
                   fullWidth
-                  id="email"
+                  id='email'
                   value={formValues.email}
-                  label="Email"
+                  label='Email'
                   onChange={handleInputChange}
-                  name="email"
-                  autoComplete="email"
+                  name='email'
+                  autoComplete='email'
                 />
               </Grid>
               <p>{error.email}</p>
@@ -297,17 +297,17 @@ export default function SignUp() {
                   fullWidth
                   values={formValues.password}
                   onChange={handleInputChange}
-                  name="password"
-                  label="Password"
-                  type="password"
-                  id="password"
-                  autoComplete="new-password"
+                  name='password'
+                  label='Password'
+                  type='password'
+                  id='password'
+                  autoComplete='new-password'
                 />
               </Grid>
               <p>{error.password}</p>
               <Grid item xs={12}>
                 <Autocomplete
-                  id="google-map-demo"
+                  id='google-map-demo'
                   sx={{ width: "25rem" }}
                   getOptionLabel={(option) =>
                     typeof option === "string" ? option : option.description
@@ -318,7 +318,7 @@ export default function SignUp() {
                   includeInputInList
                   filterSelectedOptions
                   value={value}
-                  noOptionsText="No locations"
+                  noOptionsText='No locations'
                   onChange={(event, newValue) => {
                     setOptions(newValue ? [newValue, ...options] : options);
                     setValue(newValue);
@@ -329,7 +329,7 @@ export default function SignUp() {
                     // console.log("onInputchange,newInputValue", newInputValue);
                   }}
                   renderInput={(params) => (
-                    <TextField {...params} required label="Address" fullWidth />
+                    <TextField {...params} required label='Address' fullWidth />
                   )}
                   renderOption={(props, option) => {
                     const matches =
@@ -346,7 +346,7 @@ export default function SignUp() {
 
                     return (
                       <li {...props}>
-                        <Grid container alignItems="center">
+                        <Grid container alignItems='center'>
                           <Grid item sx={{ display: "flex", width: 44 }}>
                             <LocationOnIcon sx={{ color: "text.secondary" }} />
                           </Grid>
@@ -360,7 +360,7 @@ export default function SignUp() {
                             {parts.map((part, index) => (
                               <Box
                                 key={index}
-                                component="span"
+                                component='span'
                                 sx={{
                                   fontWeight: part.highlight
                                     ? "bold"
@@ -371,7 +371,7 @@ export default function SignUp() {
                               </Box>
                             ))}
 
-                            <Typography variant="body2" color="text.secondary">
+                            <Typography variant='body2' color='text.secondary'>
                               {option.structured_formatting.secondary_text}
                             </Typography>
                           </Grid>
@@ -385,16 +385,16 @@ export default function SignUp() {
               <p>{error.address}</p>
             </Grid>
             <Button
-              type="submit"
+              type='submit'
               fullWidth
-              variant="contained"
+              variant='contained'
               sx={{ mt: 3, mb: 2 }}
             >
               Sign Up
             </Button>
-            <Grid container justifyContent="flex-end">
+            <Grid container justifyContent='flex-end'>
               <Grid item>
-                <Link href="#" variant="body2">
+                <Link href='#' variant='body2'>
                   Already have an account? Sign in
                 </Link>
               </Grid>

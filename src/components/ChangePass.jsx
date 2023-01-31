@@ -75,7 +75,7 @@ export default function ChangePassword() {
 
   return (
     <div>
-      <Button variant="outlined" onClick={handleClickOpen}>
+      <Button variant='outlined' onClick={handleClickOpen}>
         Change Password
       </Button>
       <Dialog open={open} onClose={handleClose}>
@@ -83,25 +83,25 @@ export default function ChangePassword() {
         <DialogContent>
           <TextField
             autoFocus
-            margin="dense"
-            id="password"
-            label="Password"
-            type="password"
+            margin='dense'
+            id='password'
+            label='Password'
+            type='password'
             fullWidth
-            variant="standard"
-            name="password"
+            variant='standard'
+            name='password'
             value={modalValues.password}
             onChange={handleInputChange}
           />
           <p>{errors.password}</p>
           <TextField
-            margin="dense"
-            id="confirmpassword"
-            label="Confirm Password"
-            type="password"
+            margin='dense'
+            id='confirmpassword'
+            label='Confirm Password'
+            type='password'
             fullWidth
-            variant="standard"
-            name="confirmpassword"
+            variant='standard'
+            name='confirmpassword'
             value={modalValues.confirmpassword}
             onChange={handleInputChange}
           />

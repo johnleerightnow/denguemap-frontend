@@ -3,6 +3,9 @@ import apiService from "../../services/apiservices";
 import Grid from "@mui/material/Grid";
 import SearchBar from "../SearchBar";
 import Box from "@mui/material/Box";
+import React, { useState } from "react";
+import Grid from "@mui/material/Grid";
+import Box from "@mui/material/Box";
 
 import {
   GoogleMap,
@@ -11,10 +14,23 @@ import {
   Marker,
   Circle,
 } from "@react-google-maps/api";
+import SearchBar from "../SearchBar";
+import apiService from "../../services/apiservices";
 
-const containerStyle = {
-  width: "70vw",
+const mapSearchContainer = {
+  display: "flex",
+  padding: 32,
+};
+
+const mapStyle = {
+  // width: '65vw',
+  flex: 3,
   height: "80vh",
+};
+
+const searchStyles = {
+  flex: 1,
+  paddingLeft: 32,
 };
 
 const highoptions = {
@@ -52,7 +68,7 @@ const circleoptions = {
   fillOpacity: 0.2,
 };
 
-const Home = (props) => {
+function Home() {
   const [libraries] = useState(["places"]);
   const center = {
     lat: 1.36027,
@@ -121,24 +137,8 @@ const Home = (props) => {
 
   const handleNewAddress = async (address) => {
     setCurrentLatLng(address.frontlatlng);
-    // await apiService
-    //   .getNearestRiskAreaDistance(address)
-    //   .then((results) => {
-    //     return results.data;
-    //     //setSearchResult(results.data)
-    //     // console.log("results.data", results.data);
-    //     // console.log("searchResult", searchResult);
-    //   })
-    //   .then((results2) => {
-    //     console.log(results2);
-    //     setSearchResult(results2);
-    //   })
-    //   .catch((err) => console.log("search err", err));
     const finalResults = await apiService.getNearestRiskAreaDistance(address);
-    console.log("f", finalResults);
     setSearchResult(finalResults.data);
-
-    console.log("searchResult", searchResult);
   };
 
   /**
@@ -155,45 +155,40 @@ const Home = (props) => {
   }, [searchResult]);
 
   return isLoaded ? (
-    <>
-      <Grid container>
-        <Grid>
-          <GoogleMap
-            mapContainerStyle={containerStyle}
-            center={currentLatLng}
-            zoom={zoom}
-            onLoad={onLoad}
-            onUnmount={onUnmount}
-          >
-            <Marker position={currentLatLng} />
-            <Circle center={currentLatLng} options={circleoptions} />
-            <Polygon onLoad={onLoad} paths={highRisk} options={highoptions} />
-            <Polygon onLoad={onLoad} paths={medRisk} options={medoptions} />
-          </GoogleMap>
+    <div style={mapSearchContainer}>
+      <GoogleMap
+        mapContainerStyle={mapStyle}
+        center={currentLatLng}
+        zoom={zoom}
+        onLoad={onLoad}
+        onUnmount={onUnmount}
+      >
+        <Marker position={currentLatLng} />
+        <Circle center={currentLatLng} options={circleoptions} />
+        <Polygon onLoad={onLoad} paths={highRisk} options={highoptions} />
+        <Polygon onLoad={onLoad} paths={medRisk} options={medoptions} />
+      </GoogleMap>
+      <div style={searchStyles}>
+        <Grid sx={{ mt: 3 }}>
+          <SearchBar newaddress={handleNewAddress} />
         </Grid>
-        <Box>
-          <Grid sx={{ mt: 3 }}>
-            <SearchBar newaddress={handleNewAddress} />
-          </Grid>
-          <Grid sx={{ mt: 3 }}>
-            {searchResult.isWithinRiskArea ? (
-              <div>
-                Search area is estimated to be within{" "}
-                {searchResult.minimumDistance} metres of a{" "}
-                {searchResult.riskAreaType.toLowerCase()} risk dengue cluster.
-              </div>
-            ) : searchResult.riskAreaType === "low" ? (
-              <div>You are more than 150 metres from a dengue cluster</div>
-            ) : (
-              ""
-            )}
-          </Grid>
-        </Box>
-      </Grid>
-    </>
-  ) : (
-    <></>
-  );
-};
+        <Grid sx={{ mt: 3 }}>
+          {/* eslint-disable-next-line no-nested-ternary */}
+          {searchResult.isWithinRiskArea ? (
+            <div>
+              Search area is estimated to be within{" "}
+              {searchResult.minimumDistance} metres of a{" "}
+              {searchResult.riskAreaType.toLowerCase()} risk dengue cluster.
+            </div>
+          ) : searchResult.riskAreaType === "low" ? (
+            <div>You are more than 150 metres from a dengue cluster</div>
+          ) : (
+            ""
+          )}
+        </Grid>
+      </div>
+    </div>
+  ) : null;
+}
 
 export default React.memo(Home);

@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -10,31 +10,34 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import apiservices from "../../services/apiservices";
 import Autocomplete from "@mui/material/Autocomplete";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import parse from "autosuggest-highlight/parse";
 import { debounce } from "@mui/material/utils";
 import { geocodeByAddress, getLatLng } from "react-places-autocomplete";
 import { Navigate, useNavigate } from "react-router-dom";
-import { LoginContext } from "../../App";
 import Cookies from "universal-cookie";
+// eslint-disable-next-line import/no-cycle
+import { LoginContext } from "../../App";
+import apiservices from "../../services/apiservices";
 import ChangePassword from "../ChangePass";
+import Switch from "@mui/material/Switch";
+import Stack from "@mui/material/Stack";
 
 function Copyright(props) {
   return (
     <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
+      variant='body2'
+      color='text.secondary'
+      align='center'
+      // eslint-disable-next-line react/jsx-props-no-spreading
       {...props}
     >
       {"Copyright © "}
-      <Link color="inherit" href={process.env.REACT_APP_COPYRIGHT_URL}>
+      <Link color='inherit' href={process.env.REACT_APP_COPYRIGHT_URL}>
         DengueMap
       </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
+      {new Date().getFullYear()}.
     </Typography>
   );
 }
@@ -73,18 +76,18 @@ export default function Profile() {
   const [options, setOptions] = React.useState([]);
   const [redirect, setRedirect] = useState(false);
   const loaded = React.useRef(false);
+  const [checked, setChecked] = React.useState(true);
+  const [disabled, setDisabled] = React.useState(true);
 
   if (typeof window !== "undefined" && !loaded.current) {
     if (window && window.google) {
       loaded.current = true;
-    } else {
-      if (!document.querySelector("#google-maps")) {
-        loadScript(
-          `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places&callback=Function.prototype`,
-          document.querySelector("head"),
-          "google-maps"
-        );
-      }
+    } else if (!document.querySelector("#google-maps")) {
+      loadScript(
+        `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places&callback=Function.prototype`,
+        document.querySelector("head"),
+        "google-maps"
+      );
     }
   }
 
@@ -152,7 +155,7 @@ export default function Profile() {
           email: result.data.email,
           name: result.data.name,
         });
-        setValue({ description: result.data.address });
+        setValue(result.data.fulladdress);
       });
     }
   }, []);
@@ -184,13 +187,17 @@ export default function Profile() {
         }
       });
     }
-    // console.log("errors", errors);
     setFormError(errors);
     if (Object.keys(errors).length > 0) {
       return false;
     } else {
       return true;
     }
+    return true;
+  };
+
+  const handleSwitchChange = (event) => {
+    setChecked(event.target.checked);
   };
 
   const handleSubmit = async (e) => {
@@ -216,12 +223,27 @@ export default function Profile() {
   };
 
   if (redirect) {
-    return <Navigate replace to="/signin" />;
+    return <Navigate replace to='/signin' />;
   }
+  // function usePrevious(value) {
+  //   const ref = useRef();
+  //   useEffect(() => {
+  //     ref.current = value;
+  //   });
+  //   return ref.current;
+  // }
+  // const previousValue = usePrevious(checked);
+
+  useEffect(() => {
+    // console.log("value", value);
+    console.log("checked", checked);
+    // console.log("formValues", formValues);
+    // setDisabled(false);
+  }, [checked]);
 
   return (
     <ThemeProvider theme={theme}>
-      <Container component="main" maxWidth="xs">
+      <Container component='main' maxWidth='xs'>
         <CssBaseline />
         <Box
           sx={{
@@ -234,11 +256,11 @@ export default function Profile() {
           <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
             <LockOutlinedIcon />
           </Avatar>
-          <Typography component="h1" variant="h5">
+          <Typography component='h1' variant='h5'>
             Profile
           </Typography>
           <Box
-            component="form"
+            component='form'
             noValidate
             onSubmit={handleSubmit}
             sx={{ mt: 3 }}
@@ -248,12 +270,12 @@ export default function Profile() {
                 <TextField
                   required
                   fullWidth
-                  id="name"
+                  id='name'
                   value={formValues.name}
-                  label="Name"
+                  label='Name'
                   onChange={handleInputChange}
-                  name="name"
-                  autoComplete="given-name"
+                  name='name'
+                  autoComplete='given-name'
                 />
               </Grid>
               <p>{error.name}</p>
@@ -261,19 +283,19 @@ export default function Profile() {
                 <TextField
                   required
                   fullWidth
-                  id="email"
+                  id='email'
                   value={formValues.email}
-                  label="Email"
+                  label='Email'
                   onChange={handleInputChange}
-                  name="email"
-                  autoComplete="email"
+                  name='email'
+                  autoComplete='email'
                 />
               </Grid>
               <p>{error.email}</p>
 
               <Grid item xs={12}>
                 <Autocomplete
-                  id="google-map-demo"
+                  id='google-map-demo'
                   sx={{ width: "25rem" }}
                   getOptionLabel={(option) =>
                     typeof option === "string" ? option : option.description
@@ -284,7 +306,7 @@ export default function Profile() {
                   includeInputInList
                   filterSelectedOptions
                   value={value}
-                  noOptionsText="No locations"
+                  noOptionsText='No locations'
                   onChange={(event, newValue) => {
                     setOptions(newValue ? [newValue, ...options] : options);
                     setValue(newValue);
@@ -295,7 +317,7 @@ export default function Profile() {
                     // console.log("onInputchange,newInputValue", newInputValue);
                   }}
                   renderInput={(params) => (
-                    <TextField {...params} required label="Address" fullWidth />
+                    <TextField {...params} required label='Address' fullWidth />
                   )}
                   renderOption={(props, option) => {
                     const matches =
@@ -312,12 +334,9 @@ export default function Profile() {
 
                     return (
                       <li {...props}>
-                        <Grid container alignItems="center">
+                        <Grid container alignItems='center'>
                           <Grid item sx={{ display: "flex", width: 44 }}>
-                            <LocationOnIcon
-                              disabled={true}
-                              sx={{ color: "text.secondary" }}
-                            />
+                            <LocationOnIcon sx={{ color: "text.secondary" }} />
                           </Grid>
                           <Grid
                             item
@@ -329,7 +348,7 @@ export default function Profile() {
                             {parts.map((part, index) => (
                               <Box
                                 key={index}
-                                component="span"
+                                component='span'
                                 sx={{
                                   fontWeight: part.highlight
                                     ? "bold"
@@ -340,7 +359,7 @@ export default function Profile() {
                               </Box>
                             ))}
 
-                            <Typography variant="body2" color="text.secondary">
+                            <Typography variant='body2' color='text.secondary'>
                               {option.structured_formatting.secondary_text}
                             </Typography>
                           </Grid>
@@ -355,13 +374,24 @@ export default function Profile() {
                 <ChangePassword />
               </Grid>
               <p>{error.password}</p>
+              <Grid item xs={12}>
+                <Stack direction='row' spacing={1} alignItems='center'>
+                  <Typography>Dengue Cluster Notifications</Typography>
+                  <Switch
+                    checked={checked}
+                    onChange={handleSwitchChange}
+                    inputProps={{ "aria-label": "controlled" }}
+                  />
+                </Stack>
+              </Grid>
             </Grid>
 
             <Button
-              type="submit"
+              type='submit'
               fullWidth
-              variant="contained"
+              variant='contained'
               sx={{ mt: 3, mb: 2 }}
+              disabled={disabled}
             >
               Save
             </Button>
