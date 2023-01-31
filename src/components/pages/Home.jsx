@@ -1,12 +1,7 @@
 import React, { useState } from "react";
 import apiService from "../../services/apiservices";
 import Grid from "@mui/material/Grid";
-import SearchBar from "../SearchBar";
 import Box from "@mui/material/Box";
-import React, { useState } from "react";
-import Grid from "@mui/material/Grid";
-import Box from "@mui/material/Box";
-
 import {
   GoogleMap,
   Polygon,
@@ -15,7 +10,6 @@ import {
   Circle,
 } from "@react-google-maps/api";
 import SearchBar from "../SearchBar";
-import apiService from "../../services/apiservices";
 
 const mapSearchContainer = {
   display: "flex",
