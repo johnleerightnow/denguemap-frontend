@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import apiService from "../../services/apiservices";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import {
@@ -9,6 +8,7 @@ import {
   Marker,
   Circle,
 } from "@react-google-maps/api";
+import apiService from "../../services/apiservices";
 import SearchBar from "../SearchBar";
 
 const mapSearchContainer = {
@@ -82,7 +82,7 @@ function Home() {
   const [searchResult, setSearchResult] = useState({});
   const [zoom, setZoom] = React.useState(10);
 
-  const onLoad = React.useCallback(function callback(map) {
+  const onLoad = React.useCallback((map) => {
     // This is just an example of getting and using the map instance!!! don't just blindly copy!
     // const bounds = new window.google.maps.LatLngBounds(center);
     // map.setZoom(12);
@@ -103,7 +103,7 @@ function Home() {
         },
         (err) => {
           setErrorMessage("User denied geolocation");
-        }
+        },
       );
       setZoom(17);
     } else {
@@ -125,7 +125,7 @@ function Home() {
   //   console.log("polygon: ", polygon);
   // };
 
-  const onUnmount = React.useCallback(function callback(map) {
+  const onUnmount = React.useCallback((map) => {
     setMap(null);
   }, []);
 
@@ -170,9 +170,15 @@ function Home() {
           {/* eslint-disable-next-line no-nested-ternary */}
           {searchResult.isWithinRiskArea ? (
             <div>
-              Search area is estimated to be within{" "}
-              {searchResult.minimumDistance} metres of a{" "}
-              {searchResult.riskAreaType.toLowerCase()} risk dengue cluster.
+              Search area is estimated to be within
+              {" "}
+              {searchResult.minimumDistance}
+              {' '}
+              metres of a
+              {" "}
+              {searchResult.riskAreaType.toLowerCase()}
+              {' '}
+              risk dengue cluster.
             </div>
           ) : searchResult.riskAreaType === "low" ? (
             <div>You are more than 150 metres from a dengue cluster</div>

@@ -9,7 +9,7 @@ module.exports = {
     ecmaVersion: "latest",
     sourceType: "module",
   },
-  plugins: ["react"],
+  plugins: ["react", "react-hooks"],
   rules: {
     "import/prefer-default-export": "off",
     "no-console": "off",
@@ -19,7 +19,7 @@ module.exports = {
       { terms: ["temp", "no-commit", "dont-commit"], location: "start" },
     ],
     "global-require": 0,
-    quotes: "off",
+    "quotes": "off",
     "quote-props": ["error", "consistent-as-needed"],
     "react/jsx-filename-extension": [1, { extensions: [".js", ".jsx"] }],
     "no-unused-expressions": [
@@ -37,5 +37,8 @@ module.exports = {
     // * All react rules
     "react/destructuring-assignment": 0,
     "react/prop-types": 1,
+    "react-hooks/rules-of-hooks": "error", // Checks rules of Hooks
+    "react-hooks/exhaustive-deps": "warn", // Checks effect dependencies
+
   },
 };
