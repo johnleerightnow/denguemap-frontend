@@ -55,6 +55,7 @@ export default function Header() {
     }
 
     // Secure link then should be logged in
+    // testing
     if (secureLink && loggedIn) {
       return (
         <MenuItem key={key} onClick={() => handleMenuItemClick(item)}>
