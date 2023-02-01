@@ -24,7 +24,10 @@ const dengueClustersApi = {
     return instance.post("/getNearestRiskAreaDistance", formData);
   },
   userprofile: (token) => instance.post("/userprofile", token),
+  updateprofile: (token, profileinfo) =>
+    instance.post("/updateprofile", { token, profileinfo }),
   changepassword: (tokennpass) => instance.post("/changepassword", tokennpass),
+  contactform: (formValues) => instance.post("contactform", formValues),
 };
 
 export default dengueClustersApi;

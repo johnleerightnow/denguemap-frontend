@@ -11,21 +11,22 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import apiservices from "../../services/apiservices";
-import { withCookies } from "react-cookie";
+// import { withCookies } from "react-cookie";
 import moment from "moment";
 import { LoginContext } from "../../App";
 import { useNavigate } from "react-router-dom";
+import Cookies from "universal-cookie";
 
 function Copyright(props) {
   return (
     <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
+      variant='body2'
+      color='text.secondary'
+      align='center'
       {...props}
     >
       {"Copyright © "}
-      <Link color="inherit" href="https://mui.com/">
+      <Link color='inherit' href='https://mui.com/'>
         DengueMap
       </Link>{" "}
       {new Date().getFullYear()}
@@ -42,6 +43,7 @@ function SignInSide(props) {
   const [password, setPassword] = useState("");
   const [formError, setFormError] = useState({});
   const [loggedIn] = useContext(LoginContext);
+  const cookies = new Cookies();
 
   useEffect(() => {
     if (loggedIn) {
@@ -85,7 +87,7 @@ function SignInSide(props) {
         }
         if (response.data.success) {
           console.log(response.data);
-          props.cookies.set("token", response.data.token, {
+          cookies.set("token", response.data.token, {
             path: "/",
             expires: moment.unix(response.data.expiresAt).toDate(),
           });
@@ -101,7 +103,7 @@ function SignInSide(props) {
 
   return (
     <ThemeProvider theme={theme}>
-      <Grid container component="main" sx={{ height: "100vh" }}>
+      <Grid container component='main' sx={{ height: "100vh" }}>
         <CssBaseline />
         <Grid
           item
@@ -132,46 +134,46 @@ function SignInSide(props) {
             <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
               <LockOutlinedIcon />
             </Avatar>
-            <Typography component="h1" variant="h5">
+            <Typography component='h1' variant='h5'>
               Sign in
             </Typography>
             <Box
-              component="form"
+              component='form'
               noValidate
               onSubmit={handleSubmit}
               sx={{ mt: 1 }}
             >
               <TextField
-                margin="normal"
+                margin='normal'
                 required
                 fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
+                id='email'
+                label='Email Address'
+                name='email'
+                autoComplete='email'
                 autoFocus
                 values={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
               <p>{formError.email}</p>
               <TextField
-                margin="normal"
+                margin='normal'
                 required
                 fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
+                name='password'
+                label='Password'
+                type='password'
+                id='password'
+                autoComplete='current-password'
                 values={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
               <p>{formError.password}</p>
               <p>{formError.general}</p>
               <Button
-                type="submit"
+                type='submit'
                 fullWidth
-                variant="contained"
+                variant='contained'
                 sx={{ mt: 3, mb: 2 }}
               >
                 Sign In
@@ -179,12 +181,12 @@ function SignInSide(props) {
 
               <Grid container>
                 <Grid item xs>
-                  <Link href="#" variant="body2">
+                  <Link href='#' variant='body2'>
                     Forgot password?
                   </Link>
                 </Grid>
                 <Grid item>
-                  <Link href="#" variant="body2">
+                  <Link href='#' variant='body2'>
                     {"Don't have an account? Sign Up"}
                   </Link>
                 </Grid>
@@ -198,4 +200,4 @@ function SignInSide(props) {
   );
 }
 
-export default withCookies(SignInSide);
+export default SignInSide;

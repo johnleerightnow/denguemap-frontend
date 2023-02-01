@@ -9,13 +9,13 @@ import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import { LoginContext } from "../App";
 import { useNavigate } from "react-router-dom";
-
+import { menuItems } from "./constants";
 export default function Header() {
   const navigate = useNavigate();
   const [loggedIn, setLoggedIn] = useContext(LoginContext);
   const [anchorEl, setAnchorEl] = React.useState(null);
 
-  const handleMenu = (event) => {
+  const handleMenuClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -29,33 +29,77 @@ export default function Header() {
     setLoggedIn(false);
   };
 
+  const handleMenuItemClick = (item) => {
+    const { key, navigateTo } = item;
+    handleClose();
+    switch (key) {
+      case "logOut":
+        logOut();
+        break;
+      default:
+        break;
+    }
+    if (navigateTo) navigate(navigateTo);
+  };
+
+  const renderMenuItem = (item) => {
+    const { label, key, secureLink, guestOnly } = item;
+
+    // Guest items should be have loggedIn as true
+    if (guestOnly && !loggedIn) {
+      return (
+        <MenuItem key={key} onClick={() => handleMenuItemClick(item)}>
+          {label}
+        </MenuItem>
+      );
+    }
+
+    // Secure link then should be logged in
+    if (secureLink && loggedIn) {
+      return (
+        <MenuItem key={key} onClick={() => handleMenuItemClick(item)}>
+          {label}
+        </MenuItem>
+      );
+    }
+
+    // No need to check session in case if not a secure link, just check if it is not guestOnly
+    if (!secureLink && !guestOnly) {
+      return (
+        <MenuItem key={key} onClick={() => handleMenuItemClick(item)}>
+          {label}
+        </MenuItem>
+      );
+    }
+    return null;
+  };
+
   return (
-    <Box sx={{ flexGrow: 1, width: "90vw" }}>
-      <AppBar style={{ background: "#2E3B55" }} position="static">
+    <Box sx={{ flexGrow: 1, width: "100vw" }}>
+      <AppBar style={{ background: "#2E3B55" }} position='static'>
         <Toolbar>
           <Typography
-            variant="h6"
-            component="div"
+            variant='h6'
+            component='div'
             sx={{ flexGrow: 1 }}
             onClick={() => navigate("/")}
           >
             Dengue Map
           </Typography>
-          {/* TODO make icon common */}
           <>
             <IconButton
-              size="large"
-              color="inherit"
-              aria-controls="menu-appbar"
-              aria-label="menu"
-              aria-haspopup="true"
+              size='large'
+              color='inherit'
+              aria-controls='menu-appbar'
+              aria-label='menu'
+              aria-haspopup='true'
               sx={{ mr: 2 }}
-              onClick={handleMenu}
+              onClick={handleMenuClick}
             >
               <MenuIcon />
             </IconButton>
             <Menu
-              id="menu-appbar"
+              id='menu-appbar'
               anchorEl={anchorEl}
               anchorOrigin={{
                 vertical: "bottom",
@@ -69,29 +113,7 @@ export default function Header() {
               open={Boolean(anchorEl)}
               onClose={handleClose}
             >
-              {loggedIn ? (
-                <div>
-                  <MenuItem onClick={() => navigate("profile")}>
-                    Profile
-                  </MenuItem>
-                  <MenuItem onClick={handleClose}>About</MenuItem>
-                  <MenuItem onClick={handleClose}>Dengue Info</MenuItem>
-                  <MenuItem onClick={handleClose}>Contact</MenuItem>
-                  <MenuItem onClick={logOut}>Log Out</MenuItem>
-                </div>
-              ) : (
-                <div>
-                  <MenuItem onClick={() => navigate("signin")}>
-                    Sign In
-                  </MenuItem>
-                  <MenuItem onClick={() => navigate("signup")}>
-                    Sign Up
-                  </MenuItem>
-                  <MenuItem onClick={handleClose}>About</MenuItem>
-                  <MenuItem onClick={handleClose}>Dengue Info</MenuItem>
-                  <MenuItem onClick={handleClose}>Contact</MenuItem>
-                </div>
-              )}
+              <div>{menuItems.map((item) => renderMenuItem(item))}</div>
             </Menu>
           </>
         </Toolbar>

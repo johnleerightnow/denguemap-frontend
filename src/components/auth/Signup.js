@@ -264,10 +264,10 @@ export default function SignUp() {
                   fullWidth
                   id='name'
                   label='Name'
+                  helperText={error.name}
                   autoFocus
                 />
               </Grid>
-              <p>{error.name}</p>
               {/* <Grid item xs={12} sm={6}>
                 <TextField
                   required
@@ -287,10 +287,10 @@ export default function SignUp() {
                   label='Email'
                   onChange={handleInputChange}
                   name='email'
+                  helperText={error.email}
                   autoComplete='email'
                 />
               </Grid>
-              <p>{error.email}</p>
               <Grid item xs={12}>
                 <TextField
                   required

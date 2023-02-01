@@ -1,6 +1,4 @@
-import React, {
-  useState, useContext, useEffect,
-} from "react";
+import React, { useState, useContext, useEffect } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -25,26 +23,6 @@ import Stack from "@mui/material/Stack";
 import { LoginContext } from "../../App";
 import apiservices from "../../services/apiservices";
 import ChangePassword from "../ChangePass";
-
-function Copyright(props) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      // eslint-disable-next-line react/jsx-props-no-spreading
-      {...props}
-    >
-      {"Copyright © "}
-      <Link color="inherit" href={process.env.REACT_APP_COPYRIGHT_URL}>
-        DengueMap
-      </Link>
-      {" "}
-      {new Date().getFullYear()}
-      .
-    </Typography>
-  );
-}
 
 const theme = createTheme();
 
@@ -76,33 +54,45 @@ export default function Profile() {
   const [formValues, setFormValues] = useState(initialValues);
   const [error, setFormError] = useState({});
   const [value, setValue] = React.useState(null);
+  //1.null
+  //2.api call - put in full value
+  //3.useEffect runs, compare previous and current
   const [inputValue, setInputValue] = React.useState("");
   const [options, setOptions] = React.useState([]);
   const [redirect, setRedirect] = useState(false);
   const loaded = React.useRef(false);
-  const [checked, setChecked] = React.useState(true);
+  const [emailNotify, setEmailNotify] = React.useState(true);
   const [dbValues, setDbValues] = React.useState(null);
   const [disabled, setDisabled] = React.useState(true);
 
   const enableIfUserChanged = () => {
     /* Api call has successfully returned the fromValues */
-    if(dbValues) {
+    if (dbValues) {
       /* User made a change */
-      console.log({dbValues, formValues})
-      if (JSON.stringify({name: dbValues.name, email: dbValues.email, checked: dbValues.checked}) 
-        !== 
-        JSON.stringify({name: formValues.name, email: formValues.email, checked})) {
+      console.log("{ dbValues, formValues }", { dbValues, formValues });
+      if (
+        JSON.stringify({
+          name: dbValues.name,
+          email: dbValues.email,
+          emailNotify: dbValues.emailnotification,
+          fulladdress: dbValues.fulladdress,
+        }) !==
+        JSON.stringify({
+          name: formValues.name,
+          email: formValues.email,
+          emailNotify: emailNotify,
+          fulladdress: value,
+        })
+      ) {
         setDisabled(false);
-      }
-      /* User did not change anything */
-      else {
+      } else {
+        /* User did not change anything */
         setDisabled(true);
       }
-    }
-    else {
+    } else {
       setDisabled(true);
     }
-  }
+  };
 
   if (typeof window !== "undefined" && !loaded.current) {
     if (window && window.google) {
@@ -111,24 +101,26 @@ export default function Profile() {
       loadScript(
         `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places&callback=Function.prototype`,
         document.querySelector("head"),
-        "google-maps",
+        "google-maps"
       );
     }
   }
 
   const fetch = React.useMemo(
-    () => debounce((request, callback) => {
-      request.componentRestrictions = { country: "sg" };
-      autocompleteService.current.getPlacePredictions(request, callback);
-    }, 400),
-    [],
+    () =>
+      debounce((request, callback) => {
+        request.componentRestrictions = { country: "sg" };
+        autocompleteService.current.getPlacePredictions(request, callback);
+      }, 400),
+    []
   );
 
   React.useEffect(() => {
     let active = true;
 
     if (!autocompleteService.current && window.google) {
-      autocompleteService.current = new window.google.maps.places.AutocompleteService();
+      autocompleteService.current =
+        new window.google.maps.places.AutocompleteService();
     }
     if (!autocompleteService.current) {
       return undefined;
@@ -170,7 +162,7 @@ export default function Profile() {
 
   useEffect(() => {
     enableIfUserChanged();
-  }, [formValues, value, checked]);
+  }, [formValues, value, emailNotify]);
 
   useEffect(() => {
     if (!loggedIn) {
@@ -178,13 +170,12 @@ export default function Profile() {
     }
     if (loggedIn) {
       apiservices.userprofile({ token }).then((result) => {
-        const {email, name, fulladdress} = result.data;
+        const { email, name, fulladdress, emailnotification } = result.data;
         setDbValues({
           email,
           name,
           fulladdress,
-          // TODO pick from DB later
-          checked: true,
+          emailnotification,
         });
 
         setFormValues({
@@ -192,6 +183,7 @@ export default function Profile() {
           name,
         });
         setValue(fulladdress);
+        setEmailNotify(emailnotification);
       });
     }
   }, []);
@@ -217,11 +209,13 @@ export default function Profile() {
     ) {
       errors.email = "Please key in a valid email format";
     } else {
-      await apiservices.checkemail(formValues).then((response) => {
-        if (response && response.data.msg === "Email already exists") {
-          errors.email = response.data.msg;
-        }
-      });
+      if (dbValues.email !== formValues.email) {
+        await apiservices.checkemail(formValues).then((response) => {
+          if (response && response.data.msg === "Email already exists") {
+            errors.email = response.data.msg;
+          }
+        });
+      }
     }
     setFormError(errors);
     if (Object.keys(errors).length > 0) {
@@ -231,33 +225,41 @@ export default function Profile() {
   };
 
   const handleSwitchChange = (event) => {
-    setChecked(event.target.checked);
+    setEmailNotify(event.target.checked);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const result = await validateInput(formValues);
-    // console.log("error", error);
-    // console.log("result", result);
-    // if (Object.keys(error).length === 0) not working
-
-    if (result) {
+    const valid = await validateInput(formValues);
+    if (valid) {
       geocodeByAddress(value.description)
         .then((results) => getLatLng(results[0]))
         .then((result2) => {
           const finalResult = {
             ...formValues,
             address: value.description,
-            latLng: result2,
+            latLng: `${result2.lat},${result2.lng}`,
+            fulladdress: value,
+            emailNotification: emailNotify,
           };
-          apiservices.signup(finalResult);
+          apiservices.updateprofile(token, finalResult).then((response) => {
+            console.log(response);
+            if (response.data.success) {
+              console.log(response.data);
+              cookies.remove("token");
+              cookies.set("token", response.data.token, {
+                path: "/",
+                expires: moment.unix(response.data.expiresAt).toDate(),
+              });
+            }
+          });
           setRedirect(true);
         });
     }
   };
 
   if (redirect) {
-    return <Navigate replace to="/signin" />;
+    return <Navigate replace to='/' />;
   }
   // function usePrevious(value) {
   //   const ref = useRef();
@@ -270,7 +272,7 @@ export default function Profile() {
 
   return (
     <ThemeProvider theme={theme}>
-      <Container component="main" maxWidth="xs">
+      <Container component='main' maxWidth='xs'>
         <CssBaseline />
         <Box
           sx={{
@@ -283,11 +285,11 @@ export default function Profile() {
           <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
             <LockOutlinedIcon />
           </Avatar>
-          <Typography component="h1" variant="h5">
+          <Typography component='h1' variant='h5'>
             Profile
           </Typography>
           <Box
-            component="form"
+            component='form'
             noValidate
             onSubmit={handleSubmit}
             sx={{ mt: 3 }}
@@ -297,12 +299,12 @@ export default function Profile() {
                 <TextField
                   required
                   fullWidth
-                  id="name"
+                  id='name'
                   value={formValues.name}
-                  label="Name"
+                  label='Name'
                   onChange={handleInputChange}
-                  name="name"
-                  autoComplete="given-name"
+                  name='name'
+                  autoComplete='given-name'
                 />
               </Grid>
               <p>{error.name}</p>
@@ -310,28 +312,30 @@ export default function Profile() {
                 <TextField
                   required
                   fullWidth
-                  id="email"
+                  id='email'
                   value={formValues.email}
-                  label="Email"
+                  label='Email'
                   onChange={handleInputChange}
-                  name="email"
-                  autoComplete="email"
+                  name='email'
+                  autoComplete='email'
                 />
               </Grid>
               <p>{error.email}</p>
 
               <Grid item xs={12}>
                 <Autocomplete
-                  id="google-map-demo"
+                  id='google-map-demo'
                   sx={{ width: "25rem" }}
-                  getOptionLabel={(option) => (typeof option === "string" ? option : option.description)}
+                  getOptionLabel={(option) =>
+                    typeof option === "string" ? option : option.description
+                  }
                   filterOptions={(x) => x}
                   options={options}
                   autoComplete
                   includeInputInList
                   filterSelectedOptions
                   value={value}
-                  noOptionsText="No locations"
+                  noOptionsText='No locations'
                   onChange={(event, newValue) => {
                     setOptions(newValue ? [newValue, ...options] : options);
                     setValue(newValue);
@@ -342,23 +346,24 @@ export default function Profile() {
                     // console.log("onInputchange,newInputValue", newInputValue);
                   }}
                   renderInput={(params) => (
-                    <TextField {...params} required label="Address" fullWidth />
+                    <TextField {...params} required label='Address' fullWidth />
                   )}
                   renderOption={(props, option) => {
-                    const matches = option.structured_formatting
-                      .main_text_matched_substrings || [];
+                    const matches =
+                      option.structured_formatting
+                        .main_text_matched_substrings || [];
 
                     const parts = parse(
                       option.structured_formatting.main_text,
                       matches.map((match) => [
                         match.offset,
                         match.offset + match.length,
-                      ]),
+                      ])
                     );
 
                     return (
                       <li {...props}>
-                        <Grid container alignItems="center">
+                        <Grid container alignItems='center'>
                           <Grid item sx={{ display: "flex", width: 44 }}>
                             <LocationOnIcon sx={{ color: "text.secondary" }} />
                           </Grid>
@@ -372,7 +377,7 @@ export default function Profile() {
                             {parts.map((part, index) => (
                               <Box
                                 key={index}
-                                component="span"
+                                component='span'
                                 sx={{
                                   fontWeight: part.highlight
                                     ? "bold"
@@ -383,7 +388,7 @@ export default function Profile() {
                               </Box>
                             ))}
 
-                            <Typography variant="body2" color="text.secondary">
+                            <Typography variant='body2' color='text.secondary'>
                               {option.structured_formatting.secondary_text}
                             </Typography>
                           </Grid>
@@ -399,10 +404,10 @@ export default function Profile() {
               </Grid>
               <p>{error.password}</p>
               <Grid item xs={12}>
-                <Stack direction="row" spacing={1} alignItems="center">
+                <Stack direction='row' spacing={1} alignItems='center'>
                   <Typography>Dengue Cluster Notifications</Typography>
                   <Switch
-                    checked={checked}
+                    checked={emailNotify}
                     onChange={handleSwitchChange}
                     inputProps={{ "aria-label": "controlled" }}
                   />
@@ -411,9 +416,9 @@ export default function Profile() {
             </Grid>
 
             <Button
-              type="submit"
+              type='submit'
               fullWidth
-              variant="contained"
+              variant='contained'
               sx={{ mt: 3, mb: 2 }}
               disabled={disabled}
             >
@@ -421,7 +426,6 @@ export default function Profile() {
             </Button>
           </Box>
         </Box>
-        <Copyright sx={{ mt: 5 }} />
       </Container>
     </ThemeProvider>
   );
