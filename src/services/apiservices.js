@@ -27,7 +27,9 @@ const dengueClustersApi = {
   updateprofile: (token, profileinfo) =>
     instance.post("/updateprofile", { token, profileinfo }),
   changepassword: (tokennpass) => instance.post("/changepassword", tokennpass),
-  contactform: (formValues) => instance.post("contactform", formValues),
+  contactform: (formValues) => instance.post("/contactform", formValues),
+  forgetpassword: (email) => instance.post("/forgetpassword", email),
+  resetpassword: (tokenNid) => instance.post("/resetpassword", tokenNid),
 };
 
 export default dengueClustersApi;
