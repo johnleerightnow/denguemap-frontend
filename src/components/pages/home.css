@@ -1,0 +1,12 @@
+.mapSearchContainer {
+  display: flex;
+  flex-direction: row;
+  padding: 16px;
+  min-width: 200px;
+}
+
+@media (max-width: 768px) {
+  .mapSearchContainer {
+    flex-direction: column;
+  }
+}

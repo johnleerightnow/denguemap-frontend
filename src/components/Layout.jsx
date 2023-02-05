@@ -1,17 +1,16 @@
 import React from "react";
 import Container from "@mui/material/Container";
 import { Outlet } from "react-router-dom";
+// eslint-disable-next-line import/no-cycle
 import Header from "./Header";
 
-const Layout = () => {
+function Layout() {
   return (
-    <React.Fragment>
-      <Container maxWidth={false}>
-        <Header />
-        <Outlet />
-      </Container>
-    </React.Fragment>
+    <Container style={{ margin: 0, padding: 0 }} maxWidth={false}>
+      <Header />
+      <Outlet />
+    </Container>
   );
-};
+}
 
 export default Layout;

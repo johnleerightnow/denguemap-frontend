@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import Grid from "@mui/material/Grid";
-import Box from "@mui/material/Box";
 import {
   GoogleMap,
   Polygon,
@@ -11,20 +10,26 @@ import {
 import apiService from "../../services/apiservices";
 import SearchBar from "../SearchBar";
 
-const mapSearchContainer = {
-  display: "flex",
-  padding: 32,
-};
+import './home.css';
+import { getScreen } from '../../util';
 
 const mapStyle = {
-  // width: '65vw',
   flex: 3,
   height: "80vh",
+  minWidth: 344,
+  minHeight: 400,
 };
 
 const searchStyles = {
   flex: 1,
-  paddingLeft: 32,
+  border: '1px solid grey',
+  borderRadius: 8,
+  // to make responsive while changing without reload, we need to add eventListener
+  // For static device, this should be okay
+  marginLeft: getScreen().mobile ? 0 : 16,
+  marginTop: getScreen().mobile ? 16 : 0,
+  padding: 16,
+  paddingTop: 0,
 };
 
 const highoptions = {
@@ -149,7 +154,7 @@ function Home() {
   }, [searchResult]);
 
   return isLoaded ? (
-    <div style={mapSearchContainer}>
+    <div className="mapSearchContainer">
       <GoogleMap
         mapContainerStyle={mapStyle}
         center={currentLatLng}
