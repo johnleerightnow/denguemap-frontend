@@ -4,8 +4,6 @@ import Home from "./components/pages/Home";
 import Signin from "./components/auth/Signin";
 import Signup from "./components/auth/Signup";
 import NoMatch from "./components/pages/NoMatch";
-import TestProfile1 from "./components/pages/Testprofile1";
-import TestProfile2 from "./components/pages/TestProfile2";
 import Profile from "./components/pages/Profile";
 import { authenticate } from "./components/helpers/utility";
 import Layout from "./components/Layout";
@@ -24,8 +22,6 @@ function App(props) {
           <Route element={<Layout />}>
             <Route path='/' element={<Home />} />
             <Route path='/profile' element={<Profile />} />
-            <Route path='/testprofile1' element={<TestProfile1 />} />
-            <Route path='/testprofile2' element={<TestProfile2 />} />
             <Route path='/contactform' element={<ContactForm />} />
             <Route path='/forgetpassword' element={<ForgetPassword />} />
             <Route path='/resetpassword' element={<ResetPassword />} />
