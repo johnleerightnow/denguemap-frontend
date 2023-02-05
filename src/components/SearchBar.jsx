@@ -26,7 +26,7 @@ function loadScript(src, position, id) {
 
 const autocompleteService = { current: null };
 
-const SearchBar = (props) => {
+function SearchBar(props) {
   const [value, setValue] = React.useState(null);
   const [inputValue, setInputValue] = React.useState("");
   const [options, setOptions] = React.useState([]);
@@ -36,32 +36,28 @@ const SearchBar = (props) => {
   if (typeof window !== "undefined" && !loaded.current) {
     if (window && window.google) {
       loaded.current = true;
-    } else {
-      if (!document.querySelector("#google-maps")) {
-        loadScript(
-          `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places`,
-          document.querySelector("head"),
-          "google-maps"
-        );
-      }
+    } else if (!document.querySelector("#google-maps")) {
+      loadScript(
+        `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places`,
+        document.querySelector("head"),
+        "google-maps",
+      );
     }
   }
 
   const fetch = React.useMemo(
-    () =>
-      debounce((request, callback) => {
-        request.componentRestrictions = { country: "sg" };
-        autocompleteService.current.getPlacePredictions(request, callback);
-      }, 400),
-    []
+    () => debounce((request, callback) => {
+      request.componentRestrictions = { country: "sg" };
+      autocompleteService.current.getPlacePredictions(request, callback);
+    }, 400),
+    [],
   );
 
   React.useEffect(() => {
     let active = true;
 
     if (!autocompleteService.current && window.google) {
-      autocompleteService.current =
-        new window.google.maps.places.AutocompleteService();
+      autocompleteService.current = new window.google.maps.places.AutocompleteService();
     }
     if (!autocompleteService.current) {
       return undefined;
@@ -94,23 +90,21 @@ const SearchBar = (props) => {
   }, [value, inputValue, fetch]);
 
   const submitData = () => {
-    let errors = {};
+    const newErrors = {};
     if (!value) {
-      errors.location = "Please input location.";
+      newErrors.location = "Please input location.";
     }
-    setErrors(errors);
+    setErrors(newErrors);
     if (value) {
       const address = value.description;
       geocodeByAddress(address)
-        .then((results) => {
-          return getLatLng(results[0]);
-        })
+        .then((results) => getLatLng(results[0]))
         .then((res) => {
           props.newaddress({
-            latLng: res.lat + "," + res.lng,
+            latLng: `${res.lat},${res.lng}`,
             frontlatlng: res,
             obj: {
-              latLng: res.lat + "," + res.lng,
+              latLng: `${res.lat},${res.lng}`,
               riskArea: "High",
               location: address,
             },
@@ -125,9 +119,7 @@ const SearchBar = (props) => {
       <Autocomplete
         id="google-map-demo"
         sx={{ width: 300 }}
-        getOptionLabel={(option) =>
-          typeof option === "string" ? option : option.description
-        }
+        getOptionLabel={(option) => (typeof option === "string" ? option : option.description)}
         filterOptions={(x) => x}
         options={options}
         autoComplete
@@ -145,17 +137,16 @@ const SearchBar = (props) => {
         renderInput={(params) => (
           <TextField {...params} label="Add a location" fullWidth />
         )}
-        renderOption={(props, option) => {
-          const matches =
-            option.structured_formatting.main_text_matched_substrings || [];
+        renderOption={(props1, option) => {
+          const matches = option.structured_formatting.main_text_matched_substrings || [];
 
           const parts = parse(
             option.structured_formatting.main_text,
-            matches.map((match) => [match.offset, match.offset + match.length])
+            matches.map((match) => [match.offset, match.offset + match.length]),
           );
 
           return (
-            <li {...props}>
+            <li {...props1}>
               <Grid container alignItems="center">
                 <Grid item sx={{ display: "flex", width: 44 }}>
                   <LocationOnIcon sx={{ color: "text.secondary" }} />
@@ -183,12 +174,12 @@ const SearchBar = (props) => {
           );
         }}
       />
-      <Button variant="outlined" onClick={submitData}>
+      <Button variant='contained' onClick={submitData} style={{ marginTop: 16 }}>
         Submit
       </Button>
-      <p>{errors.location}</p>
+      <p style={{ color: 'red' }}>{errors.location}</p>
     </>
   );
-};
+}
 
 export default SearchBar;
