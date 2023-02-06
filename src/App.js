@@ -10,6 +10,8 @@ import Layout from "./components/Layout";
 import ContactForm from "./components/pages/ContactForm.jsx";
 import ForgetPassword from "./components/pages/ForgetPassword";
 import ResetPassword from "./components/pages/ResetPassword";
+import About from "./components/pages/About";
+import DengueInfo from "./components/pages/DengueInfo";
 
 export const LoginContext = createContext();
 
@@ -22,6 +24,8 @@ function App(props) {
           <Route element={<Layout />}>
             <Route path='/' element={<Home />} />
             <Route path='/profile' element={<Profile />} />
+            <Route path='/about' element={<About />} />
+            <Route path='/dengueinfo' element={<DengueInfo />} />
             <Route path='/contactform' element={<ContactForm />} />
             <Route path='/forgetpassword' element={<ForgetPassword />} />
             <Route path='/resetpassword' element={<ResetPassword />} />

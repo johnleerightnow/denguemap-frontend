@@ -10,8 +10,8 @@ import {
 import apiService from "../../services/apiservices";
 import SearchBar from "../SearchBar";
 
-import './home.css';
-import { getScreen } from '../../util';
+import "./home.css";
+import { getScreen } from "../../util";
 
 const mapStyle = {
   flex: 3,
@@ -22,7 +22,7 @@ const mapStyle = {
 
 const searchStyles = {
   flex: 1,
-  border: '1px solid grey',
+  border: "1px solid grey",
   borderRadius: 8,
   // to make responsive while changing without reload, we need to add eventListener
   // For static device, this should be okay
@@ -154,7 +154,7 @@ function Home() {
   }, [searchResult]);
 
   return isLoaded ? (
-    <div className="mapSearchContainer">
+    <div className='mapSearchContainer'>
       <GoogleMap
         mapContainerStyle={mapStyle}
         center={currentLatLng}

@@ -268,16 +268,6 @@ export default function SignUp() {
                   autoFocus
                 />
               </Grid>
-              {/* <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  fullWidth
-                  id="lastName"
-                  label="Last Name"
-                  name="lastName"
-                  autoComplete="family-name"
-                />
-              </Grid> */}
               <Grid item xs={12}>
                 <TextField
                   required
@@ -394,7 +384,7 @@ export default function SignUp() {
             </Button>
             <Grid container justifyContent='flex-end'>
               <Grid item>
-                <Link href='#' variant='body2'>
+                <Link href='/signin' variant='body2'>
                   Already have an account? Sign in
                 </Link>
               </Grid>

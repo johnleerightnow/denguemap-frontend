@@ -40,24 +40,26 @@ function SearchBar(props) {
       loadScript(
         `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places`,
         document.querySelector("head"),
-        "google-maps",
+        "google-maps"
       );
     }
   }
 
   const fetch = React.useMemo(
-    () => debounce((request, callback) => {
-      request.componentRestrictions = { country: "sg" };
-      autocompleteService.current.getPlacePredictions(request, callback);
-    }, 400),
-    [],
+    () =>
+      debounce((request, callback) => {
+        request.componentRestrictions = { country: "sg" };
+        autocompleteService.current.getPlacePredictions(request, callback);
+      }, 400),
+    []
   );
 
   React.useEffect(() => {
     let active = true;
 
     if (!autocompleteService.current && window.google) {
-      autocompleteService.current = new window.google.maps.places.AutocompleteService();
+      autocompleteService.current =
+        new window.google.maps.places.AutocompleteService();
     }
     if (!autocompleteService.current) {
       return undefined;
@@ -117,16 +119,18 @@ function SearchBar(props) {
   return (
     <>
       <Autocomplete
-        id="google-map-demo"
+        id='google-map-demo'
         sx={{ width: 300 }}
-        getOptionLabel={(option) => (typeof option === "string" ? option : option.description)}
+        getOptionLabel={(option) =>
+          typeof option === "string" ? option : option.description
+        }
         filterOptions={(x) => x}
         options={options}
         autoComplete
         includeInputInList
         filterSelectedOptions
         value={value}
-        noOptionsText="No locations"
+        noOptionsText='No locations'
         onChange={(event, newValue) => {
           setOptions(newValue ? [newValue, ...options] : options);
           setValue(newValue);
@@ -135,19 +139,20 @@ function SearchBar(props) {
           setInputValue(newInputValue);
         }}
         renderInput={(params) => (
-          <TextField {...params} label="Add a location" fullWidth />
+          <TextField {...params} label='Add a location' fullWidth />
         )}
         renderOption={(props1, option) => {
-          const matches = option.structured_formatting.main_text_matched_substrings || [];
+          const matches =
+            option.structured_formatting.main_text_matched_substrings || [];
 
           const parts = parse(
             option.structured_formatting.main_text,
-            matches.map((match) => [match.offset, match.offset + match.length]),
+            matches.map((match) => [match.offset, match.offset + match.length])
           );
 
           return (
             <li {...props1}>
-              <Grid container alignItems="center">
+              <Grid container alignItems='center'>
                 <Grid item sx={{ display: "flex", width: 44 }}>
                   <LocationOnIcon sx={{ color: "text.secondary" }} />
                 </Grid>
@@ -158,14 +163,14 @@ function SearchBar(props) {
                   {parts.map((part, index) => (
                     <Box
                       key={index}
-                      component="span"
+                      component='span'
                       sx={{ fontWeight: part.highlight ? "bold" : "regular" }}
                     >
                       {part.text}
                     </Box>
                   ))}
 
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography variant='body2' color='text.secondary'>
                     {option.structured_formatting.secondary_text}
                   </Typography>
                 </Grid>
@@ -174,10 +179,14 @@ function SearchBar(props) {
           );
         }}
       />
-      <Button variant='contained' onClick={submitData} style={{ marginTop: 16 }}>
+      <Button
+        variant='contained'
+        onClick={submitData}
+        style={{ marginTop: 16 }}
+      >
         Submit
       </Button>
-      <p style={{ color: 'red' }}>{errors.location}</p>
+      <p style={{ color: "red" }}>{errors.location}</p>
     </>
   );
 }

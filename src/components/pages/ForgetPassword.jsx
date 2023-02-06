@@ -24,7 +24,12 @@ const ForgetPassword = () => {
   };
   return (
     <>
-      <Typography gutterBottom variant='h4' align='center'>
+      <Typography
+        style={{ marginTop: 40 }}
+        gutterBottom
+        variant='h4'
+        align='center'
+      >
         Reset Password
       </Typography>
       <Grid>

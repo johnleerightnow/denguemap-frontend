@@ -63,7 +63,7 @@ function ContactForm() {
     }
   };
   return (
-    <div className='ContactForm'>
+    <div style={{ marginTop: 40 }} className='ContactForm'>
       <Typography gutterBottom variant='h4' align='center'>
         Contact Form
       </Typography>
@@ -71,7 +71,7 @@ function ContactForm() {
         <Card style={{ maxWidth: 450, padding: "20px 5px", margin: "0 auto" }}>
           <CardContent>
             <Typography gutterBottom variant='h6'>
-              Send your feedback here. <br />
+              Send your request here. <br />
               Alternatively you may email to contact@denguemap.sg
             </Typography>
             <form noValidate={true} onSubmit={handleSubmit}>

@@ -26,7 +26,7 @@ function Copyright(props) {
       {...props}
     >
       {"Copyright © "}
-      <Link color='inherit' href='https://mui.com/'>
+      <Link color='inherit' href={process.env.REACT_APP_COPYRIGHT_URL}>
         DengueMap
       </Link>{" "}
       {new Date().getFullYear()}
@@ -181,12 +181,12 @@ function SignInSide(props) {
 
               <Grid container>
                 <Grid item xs>
-                  <Link href='#' variant='body2'>
+                  <Link href='/forgetpassword' variant='body2'>
                     Forgot password?
                   </Link>
                 </Grid>
                 <Grid item>
-                  <Link href='#' variant='body2'>
+                  <Link href='/signup' variant='body2'>
                     {"Don't have an account? Sign Up"}
                   </Link>
                 </Grid>
