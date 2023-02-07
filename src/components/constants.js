@@ -38,6 +38,18 @@ export const menuItems = [
     secureLink: false,
   },
   {
+    label: "Forgetpassword",
+    key: "forgetpassword",
+    navigateTo: "/forgetpassword",
+    secureLink: false,
+  },
+  {
+    label: "Resetpassword",
+    key: "resetpassword",
+    navigateTo: "/resetpassword",
+    secureLink: false,
+  },
+  {
     label: "Log Out",
     key: "logOut",
     // Can be null, means we do not want to redirect
