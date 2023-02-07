@@ -37,18 +37,18 @@ export const menuItems = [
     navigateTo: "/contactform",
     secureLink: false,
   },
-  {
-    label: "Forgetpassword",
-    key: "forgetpassword",
-    navigateTo: "/forgetpassword",
-    secureLink: false,
-  },
-  {
-    label: "Resetpassword",
-    key: "resetpassword",
-    navigateTo: "/resetpassword",
-    secureLink: false,
-  },
+  // {
+  //   label: "Forgetpassword",
+  //   key: "forgetpassword",
+  //   navigateTo: "/forgetpassword",
+  //   secureLink: false,
+  // },
+  // {
+  //   label: "Resetpassword",
+  //   key: "resetpassword",
+  //   navigateTo: "/resetpassword",
+  //   secureLink: false,
+  // },
   {
     label: "Log Out",
     key: "logOut",
