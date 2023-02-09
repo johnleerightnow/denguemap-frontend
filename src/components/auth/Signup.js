@@ -253,8 +253,8 @@ export default function SignUp() {
             onSubmit={handleSubmit}
             sx={{ mt: 3 }}
           >
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
+            <Grid container justifyContent='center' spacing={2}>
+              <Grid item xs={11}>
                 <TextField
                   values={formValues.name}
                   onChange={handleInputChange}
@@ -268,7 +268,7 @@ export default function SignUp() {
                   autoFocus
                 />
               </Grid>
-              <Grid item xs={12}>
+              <Grid item xs={11}>
                 <TextField
                   required
                   fullWidth
@@ -281,7 +281,7 @@ export default function SignUp() {
                   autoComplete='email'
                 />
               </Grid>
-              <Grid item xs={12}>
+              <Grid item xs={11}>
                 <TextField
                   required
                   fullWidth
@@ -295,10 +295,10 @@ export default function SignUp() {
                 />
               </Grid>
               <p>{error.password}</p>
-              <Grid item xs={12}>
+              <Grid item xs={11}>
                 <Autocomplete
                   id='google-map-demo'
-                  sx={{ width: "25rem" }}
+                  sx={11}
                   getOptionLabel={(option) =>
                     typeof option === "string" ? option : option.description
                   }
@@ -373,16 +373,19 @@ export default function SignUp() {
               </Grid>
 
               <p>{error.address}</p>
+              <Grid item xs={11}>
+                <Button
+                  type='submit'
+                  fullWidth
+                  variant='contained'
+                  sx={{ mt: 3, mb: 2 }}
+                >
+                  Sign Up
+                </Button>
+              </Grid>
             </Grid>
-            <Button
-              type='submit'
-              fullWidth
-              variant='contained'
-              sx={{ mt: 3, mb: 2 }}
-            >
-              Sign Up
-            </Button>
-            <Grid container justifyContent='flex-end'>
+
+            <Grid container justifyContent='center'>
               <Grid item>
                 <Link href='/signin' variant='body2'>
                   Already have an account? Sign in

@@ -27,6 +27,7 @@ export default function Header() {
     document.cookie = "token=;expires=Thu, 01 Jan 1970 00:00:01 GMT";
     handleClose();
     setLoggedIn(false);
+    navigate("/");
   };
 
   const handleMenuItemClick = (item) => {
