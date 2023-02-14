@@ -10,3 +10,8 @@
     flex-direction: column;
   }
 }
+
+.MuiFormHelperText-root {
+  color: red !important;
+  font-size: 17px !important;
+}

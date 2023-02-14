@@ -110,7 +110,7 @@ function Home() {
           setErrorMessage("User denied geolocation");
         }
       );
-      setZoom(17);
+      setZoom(13);
     } else {
       setErrorMessage("Geolocation unavailable");
     }
@@ -138,6 +138,7 @@ function Home() {
     setCurrentLatLng(address.frontlatlng);
     const finalResults = await apiService.getNearestRiskAreaDistance(address);
     setSearchResult(finalResults.data);
+    setZoom(16);
   };
 
   /**
@@ -153,6 +154,11 @@ function Home() {
     console.log("searchResult", searchResult);
   }, [searchResult]);
 
+  const mapOptions = {
+    streetViewControl: false,
+    mapTypeControl: false,
+  };
+
   return isLoaded ? (
     <div className='mapSearchContainer'>
       <GoogleMap
@@ -161,6 +167,7 @@ function Home() {
         zoom={zoom}
         onLoad={onLoad}
         onUnmount={onUnmount}
+        options={mapOptions}
       >
         <Marker position={currentLatLng} />
         <Circle center={currentLatLng} options={circleoptions} />

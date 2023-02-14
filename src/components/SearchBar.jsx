@@ -139,7 +139,12 @@ function SearchBar(props) {
           setInputValue(newInputValue);
         }}
         renderInput={(params) => (
-          <TextField {...params} label='Add a location' fullWidth />
+          <TextField
+            helperText={errors.location}
+            {...params}
+            label='Add a location'
+            fullWidth
+          />
         )}
         renderOption={(props1, option) => {
           const matches =
@@ -186,7 +191,6 @@ function SearchBar(props) {
       >
         Submit
       </Button>
-      <p style={{ color: "red" }}>{errors.location}</p>
     </>
   );
 }

@@ -152,10 +152,10 @@ function SignInSide(props) {
                 name='email'
                 autoComplete='email'
                 autoFocus
+                helperText={formError.email}
                 values={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
-              <p>{formError.email}</p>
               <TextField
                 margin='normal'
                 required
@@ -165,10 +165,10 @@ function SignInSide(props) {
                 type='password'
                 id='password'
                 autoComplete='current-password'
+                helperText={formError.password}
                 values={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
-              <p>{formError.password}</p>
               <p>{formError.general}</p>
               <Button
                 type='submit'

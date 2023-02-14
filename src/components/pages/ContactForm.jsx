@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Grid,
   TextField,
@@ -12,6 +13,8 @@ import apiservices from "../../services/apiservices";
 function ContactForm() {
   const [formValues, setFormValues] = useState({});
   const [errors, setFormErrors] = useState({});
+  const [sent, setSent] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     console.log(formValues);
@@ -34,11 +37,11 @@ function ContactForm() {
     ) {
       errors.email = "Please key in a valid email format";
     }
-    if (!inputs.subject) {
-      errors.subject = "Subject must not be empty";
-    } else if (!inputs.subject.length > 100) {
-      errors.subject = "Subject must not be more than 100 characters";
-    }
+    // if (!inputs.subject) {
+    //   errors.subject = "Subject must not be empty";
+    // } else if (!inputs.subject.length > 100) {
+    //   errors.subject = "Subject must not be more than 100 characters";
+    // }
     if (!inputs.message) {
       errors.message = "Message must not be empty";
     } else if (!inputs.message.length > 1000) {
@@ -57,12 +60,15 @@ function ContactForm() {
     const valid = validateForm(formValues);
     if (valid) {
       const returnmsg = await apiservices.contactform(formValues);
-      if (returnmsg) {
-        console.log(returnmsg);
+      if (returnmsg && returnmsg.data.status === "success") {
+        setSent("success");
+        setTimeout(() => navigate("/"), 1500);
+      } else {
+        setFormErrors({ general: "Something went wrong please try again" });
       }
     }
   };
-  return (
+  return sent !== "success" ? (
     <div style={{ marginTop: 40 }} className='ContactForm'>
       <Typography gutterBottom variant='h4' align='center'>
         Contact Form
@@ -101,7 +107,7 @@ function ContactForm() {
                     required
                   />
                 </Grid>
-                <Grid item xs={12}>
+                {/* <Grid item xs={12}>
                   <TextField
                     placeholder='Enter Subject'
                     label='Subject'
@@ -113,7 +119,7 @@ function ContactForm() {
                     fullWidth
                     required
                   />
-                </Grid>
+                </Grid> */}
                 <Grid item xs={12}>
                   <TextField
                     label='Message'
@@ -139,8 +145,24 @@ function ContactForm() {
                     Submit
                   </Button>
                 </Grid>
+                <p>{errors.general}</p>
               </Grid>
             </form>
+          </CardContent>
+        </Card>
+      </Grid>
+    </div>
+  ) : (
+    <div style={{ marginTop: 40 }} className='ContactForm'>
+      <Typography gutterBottom variant='h4' align='center'>
+        Contact Form
+      </Typography>
+      <Grid>
+        <Card style={{ maxWidth: 450, padding: "20px 5px", margin: "0 auto" }}>
+          <CardContent>
+            <Typography gutterBottom variant='h6'>
+              Form successfully sent.
+            </Typography>
           </CardContent>
         </Card>
       </Grid>

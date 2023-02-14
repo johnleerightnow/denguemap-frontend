@@ -56,7 +56,7 @@ function loadScript(src, position, id) {
 
 const autocompleteService = { current: null };
 
-export default function SignUp() {
+const SignUp = () => {
   const navigate = useNavigate();
   const [loggedIn, setLoggedIn] = useContext(LoginContext);
 
@@ -206,28 +206,6 @@ export default function SignUp() {
   if (redirect) {
     return <Navigate replace to='/signin' />;
   }
-
-  /*  const handleSelect = (address) => {
-    // console.log("address", address.label);
-    if (address) {
-      geocodeByAddress(address.label)
-        .then((results) => getLatLng(results[0]))
-        .then(({ lat, lng }) =>
-          console.log("Successfully got latitude and longitude", { lat, lng })
-        );
-    }
-  }; */
-
-  /* should i place function outside of the main component or inside? */
-  /* Should I use this? */
-  /* const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
-  }; */
 
   return (
     <ThemeProvider theme={theme}>
@@ -398,4 +376,6 @@ export default function SignUp() {
       </Container>
     </ThemeProvider>
   );
-}
+};
+
+export default SignUp;
