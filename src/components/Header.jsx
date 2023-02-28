@@ -10,6 +10,7 @@ import Menu from "@mui/material/Menu";
 import { LoginContext } from "../App";
 import { useNavigate } from "react-router-dom";
 import { menuItems } from "./constants";
+import "./header.css";
 export default function Header() {
   const navigate = useNavigate();
   const [loggedIn, setLoggedIn] = useContext(LoginContext);
@@ -85,6 +86,8 @@ export default function Header() {
             component='div'
             sx={{ flexGrow: 1 }}
             onClick={() => navigate("/")}
+            cursor='pointer'
+            className='logo'
           >
             Dengue Map
           </Typography>

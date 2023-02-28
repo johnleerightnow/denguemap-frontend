@@ -9,8 +9,22 @@ import parse from "autosuggest-highlight/parse";
 import { debounce } from "@mui/material/utils";
 import { geocodeByAddress, getLatLng } from "react-places-autocomplete";
 import Button from "@mui/material/Button";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import Popover from "@mui/material/Popover";
+import "../index.css";
 
 const GOOGLE_MAPS_API_KEY = process.env.REACT_APP_GOOGLE_API;
+
+const descriptionHighRisk = (
+  <span>
+    High-risk area with 10 or more cases - <span>Red.</span>
+  </span>
+);
+const descriptionMedRisk = (
+  <span>
+    Med-risk area with less than 10 cases - <span>Yellow</span>
+  </span>
+);
 
 function loadScript(src, position, id) {
   if (!position) {
@@ -32,6 +46,16 @@ function SearchBar(props) {
   const [options, setOptions] = React.useState([]);
   const [errors, setErrors] = React.useState({});
   const loaded = React.useRef(false);
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+
+  const handlePopoverOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handlePopoverClose = () => {
+    setAnchorEl(null);
+  };
 
   if (typeof window !== "undefined" && !loaded.current) {
     if (window && window.google) {
@@ -184,13 +208,54 @@ function SearchBar(props) {
           );
         }}
       />
-      <Button
-        variant='contained'
-        onClick={submitData}
-        style={{ marginTop: 16 }}
-      >
-        Submit
-      </Button>
+
+      <div style={{ position: "relative" }}>
+        <Button
+          variant='contained'
+          onClick={submitData}
+          style={{ marginTop: "16px", width: "30%" }}
+          className='submitButton'
+        >
+          Submit
+        </Button>
+        <InfoOutlinedIcon
+          aria-owns={open ? "mouse-over-popover" : undefined}
+          aria-haspopup='true'
+          onMouseEnter={handlePopoverOpen}
+          onMouseLeave={handlePopoverClose}
+          className='outlineIcon'
+          style={{
+            width: "70%",
+            position: "absolute",
+            top: "20px",
+            left: "10px",
+          }}
+        />
+        <Popover
+          id='mouse-over-popover'
+          sx={{
+            pointerEvents: "none",
+          }}
+          open={open}
+          anchorEl={anchorEl}
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "left",
+          }}
+          transformOrigin={{
+            vertical: "top",
+            horizontal: "left",
+          }}
+          onClose={handlePopoverClose}
+          disableRestoreFocus
+        >
+          <Typography sx={{ p: 1 }}>
+            {descriptionHighRisk}
+            <br />
+            {descriptionMedRisk}
+          </Typography>
+        </Popover>
+      </div>
     </>
   );
 }

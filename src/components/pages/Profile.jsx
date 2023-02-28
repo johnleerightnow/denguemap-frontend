@@ -3,7 +3,6 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
@@ -24,6 +23,7 @@ import { LoginContext } from "../../App";
 import apiservices from "../../services/apiservices";
 import ChangePassword from "../ChangePass";
 import moment from "moment";
+import { emailValidateRegex } from "../helpers/utility";
 
 const theme = createTheme();
 
@@ -47,7 +47,7 @@ export default function Profile() {
   const navigate = useNavigate();
   const cookies = new Cookies();
   const token = cookies.get("token");
-  const [loggedIn, setLoggedIn] = useContext(LoginContext);
+  const [loggedIn] = useContext(LoginContext);
   const initialValues = {
     name: "",
     email: "",
@@ -205,9 +205,7 @@ export default function Profile() {
     }
     if (!inputs.email) {
       errors.email = "Email must not be empty";
-    } else if (
-      !/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(inputs.email)
-    ) {
+    } else if (!emailValidateRegex.test(inputs.email)) {
       errors.email = "Please key in a valid email format";
     } else {
       if (dbValues.email !== formValues.email) {

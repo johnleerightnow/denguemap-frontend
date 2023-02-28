@@ -10,6 +10,8 @@ import {
 } from "@mui/material";
 import apiservices from "../../services/apiservices";
 
+import { emailValidateRegex } from "../helpers/utility";
+
 function ContactForm() {
   const [formValues, setFormValues] = useState({});
   const [errors, setFormErrors] = useState({});
@@ -32,9 +34,7 @@ function ContactForm() {
     }
     if (!inputs.email) {
       errors.email = "Email must not be empty";
-    } else if (
-      !/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(inputs.email)
-    ) {
+    } else if (!emailValidateRegex.test(inputs.email)) {
       errors.email = "Please key in a valid email format";
     }
     // if (!inputs.subject) {

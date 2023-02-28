@@ -6,6 +6,7 @@ import {
   useJsApiLoader,
   Marker,
   Circle,
+  InfoWindow,
 } from "@react-google-maps/api";
 import apiService from "../../services/apiservices";
 import SearchBar from "../SearchBar";
@@ -86,6 +87,9 @@ function Home() {
   const [errorMessage, setErrorMessage] = React.useState(null);
   const [searchResult, setSearchResult] = useState({});
   const [zoom, setZoom] = React.useState(10);
+  const [selectPlace, setSelectedPlace] = useState({});
+  const [activeMarker, setActiveMarker] = useState({});
+  const [showingInfoWindow, setShowingInfoWindow] = useState(false);
 
   const onLoad = React.useCallback((map) => {
     // This is just an example of getting and using the map instance!!! don't just blindly copy!
@@ -93,18 +97,40 @@ function Home() {
     // map.setZoom(12);
     getDengueClusters();
     getCurrentLatLng();
-
     setMap(map);
   }, []);
 
+  const onInfoLoad = (infoWindow) => {
+    console.log("infoWindow: ", infoWindow);
+  };
+
+  const divStyle = {
+    background: `white`,
+    border: `1px solid #ccc`,
+    padding: 15,
+  };
+
   const getCurrentLatLng = () => {
     if (navigator.geolocation) {
+      // navigator.geolocation.getCurrentPosition((pos) =>
+      //   console.log("pos", pos)
+      // );
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          setCurrentLatLng({
+          const frontlatlng = {
             lat: position.coords.latitude,
             lng: position.coords.longitude,
-          });
+          };
+          const latLng = JSON.stringify(
+            position.coords.latitude,
+            position.coords.longitude
+          );
+
+          handleNewAddress({ frontlatlng, latLng, obj: {} });
+          /* setCurrentLatLng({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          }); */
         },
         (err) => {
           setErrorMessage("User denied geolocation");
@@ -136,6 +162,7 @@ function Home() {
 
   const handleNewAddress = async (address) => {
     setCurrentLatLng(address.frontlatlng);
+    console.log("handlenewaddress", address);
     const finalResults = await apiService.getNearestRiskAreaDistance(address);
     setSearchResult(finalResults.data);
     setZoom(16);
@@ -151,13 +178,25 @@ function Home() {
    * and that's the reason why we don't see expected results on LN#141.
    */
   React.useEffect(() => {
-    console.log("searchResult", searchResult);
+    // console.log("searchResult", searchResult);
   }, [searchResult]);
 
   const mapOptions = {
     streetViewControl: false,
     mapTypeControl: false,
   };
+
+  const markerMouseOver = (props, marker) => {
+    // setActiveMarker(marker);
+    setSelectedPlace(props);
+    setShowingInfoWindow(true);
+    console.log(marker);
+    console.log(props);
+  };
+
+  const markerMouseOut = () => {};
+
+  const infoOptions = { visible: false };
 
   return isLoaded ? (
     <div className='mapSearchContainer'>
@@ -169,10 +208,23 @@ function Home() {
         onUnmount={onUnmount}
         options={mapOptions}
       >
-        <Marker position={currentLatLng} />
+        <Marker
+          name='MarkerTest'
+          onMouseOver={(MapMouseEvent) => console.log(MapMouseEvent)}
+          position={currentLatLng}
+        />
         <Circle center={currentLatLng} options={circleoptions} />
         <Polygon onLoad={onLoad} paths={highRisk} options={highoptions} />
         <Polygon onLoad={onLoad} paths={medRisk} options={medoptions} />
+        {/* <InfoWindow
+          position={currentLatLng}
+          options={infoOptions}
+          visible={false}
+        >
+          <div style={divStyle}>
+            <h1>InfoWindow</h1>
+          </div>
+        </InfoWindow> */}
       </GoogleMap>
       <div style={searchStyles}>
         <Grid sx={{ mt: 3 }}>
@@ -187,7 +239,7 @@ function Home() {
               {searchResult.riskAreaType.toLowerCase()} risk dengue cluster.
             </div>
           ) : searchResult.riskAreaType === "low" ? (
-            <div>You are more than 150 metres from a dengue cluster</div>
+            <div>Your area is more than 150 metres from a dengue cluster</div>
           ) : (
             ""
           )}

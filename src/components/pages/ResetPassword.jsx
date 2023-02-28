@@ -8,7 +8,6 @@ import {
   Typography,
 } from "@mui/material";
 import apiservices from "../../services/apiservices";
-import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 

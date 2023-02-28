@@ -9,3 +9,6 @@ export const authenticate = () => {
   }
   return true;
 };
+
+export const emailValidateRegex =
+  /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;

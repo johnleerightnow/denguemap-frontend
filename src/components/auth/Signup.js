@@ -17,8 +17,10 @@ import { debounce } from "@mui/material/utils";
 import { geocodeByAddress, getLatLng } from "react-places-autocomplete";
 import { Navigate, useNavigate } from "react-router-dom";
 import apiservices from "../../services/apiservices";
+import AccountBoxIcon from "@mui/icons-material/AccountBox";
 // eslint-disable-next-line import/no-cycle
 import { LoginContext } from "../../App";
+import { emailValidateRegex } from "../helpers/utility";
 
 function Copyright(props) {
   return (
@@ -58,7 +60,7 @@ const autocompleteService = { current: null };
 
 const SignUp = () => {
   const navigate = useNavigate();
-  const [loggedIn, setLoggedIn] = useContext(LoginContext);
+  const [loggedIn] = useContext(LoginContext);
 
   useEffect(() => {
     if (loggedIn) {
@@ -160,9 +162,7 @@ const SignUp = () => {
     }
     if (!inputs.email) {
       errors.email = "Email must not be empty";
-    } else if (
-      !/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(inputs.email)
-    ) {
+    } else if (!emailValidateRegex.test(inputs.email)) {
       errors.email = "Please key in a valid email format";
     } else {
       await apiservices.checkemail(formValues).then((response) => {
@@ -220,10 +220,11 @@ const SignUp = () => {
           }}
         >
           <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-            <LockOutlinedIcon />
+            {/* <LockOutlinedIcon /> */}
+            <AccountBoxIcon />
           </Avatar>
-          <Typography component='h1' variant='h5'>
-            Sign up
+          <Typography component='h1' variant='h6'>
+            Sign up for dengue cluster notifications
           </Typography>
           <Box
             component='form'

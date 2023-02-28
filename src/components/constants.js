@@ -1,5 +1,11 @@
 export const menuItems = [
   {
+    label: "Home",
+    key: "home",
+    navigateTo: "/",
+    secureLink: false,
+  },
+  {
     label: "Sign In",
     key: "singIn",
     navigateTo: "/signin",
@@ -37,18 +43,7 @@ export const menuItems = [
     navigateTo: "/contactform",
     secureLink: false,
   },
-  // {
-  //   label: "Forgetpassword",
-  //   key: "forgetpassword",
-  //   navigateTo: "/forgetpassword",
-  //   secureLink: false,
-  // },
-  // {
-  //   label: "Resetpassword",
-  //   key: "resetpassword",
-  //   navigateTo: "/resetpassword",
-  //   secureLink: false,
-  // },
+
   {
     label: "Log Out",
     key: "logOut",

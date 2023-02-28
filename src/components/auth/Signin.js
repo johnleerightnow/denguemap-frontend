@@ -16,6 +16,7 @@ import moment from "moment";
 import { LoginContext } from "../../App";
 import { useNavigate } from "react-router-dom";
 import Cookies from "universal-cookie";
+import { emailValidateRegex } from "../helpers/utility";
 
 function Copyright(props) {
   return (
@@ -55,7 +56,7 @@ function SignInSide(props) {
     let errors = {};
     if (!email) {
       errors.email = "Email must not be empty";
-    } else if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
+    } else if (!emailValidateRegex.test(email)) {
       errors.email = "Please key in a valid email format";
     }
     if (!password) {
