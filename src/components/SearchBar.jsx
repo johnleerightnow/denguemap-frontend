@@ -225,10 +225,10 @@ function SearchBar(props) {
           onMouseLeave={handlePopoverClose}
           className='outlineIcon'
           style={{
-            width: "70%",
+            width: "30%",
             position: "absolute",
             top: "20px",
-            left: "10px",
+            left: "100px",
           }}
         />
         <Popover
