@@ -10,7 +10,6 @@ import {
 } from "@react-google-maps/api";
 import apiService from "../../services/apiservices";
 import SearchBar from "../SearchBar";
-
 import "./home.css";
 import { getScreen } from "../../util";
 
@@ -61,14 +60,14 @@ const medoptions = {
 
 const circleoptions = {
   radius: 150,
-  strokeColor: "#0000FF",
+  strokeColor: "#00FF00",
   strokeOpacity: 0.9,
   strokeWeight: 2,
-  fillColor: "#0000FF",
+  fillColor: "#00FF00",
   fillOpacity: 0.2,
 };
 
-function Home() {
+const Home = () => {
   const [libraries] = useState(["places"]);
   const center = {
     lat: 1.36027,
@@ -90,6 +89,36 @@ function Home() {
   const [selectPlace, setSelectedPlace] = useState({});
   const [activeMarker, setActiveMarker] = useState({});
   const [showingInfoWindow, setShowingInfoWindow] = useState(false);
+  const [activeInfoWindowResults, setActiveInfoWindowResults] = useState({
+    address: "",
+    search: "",
+  });
+
+  function createCenterControl(mapc) {
+    const controlButton = document.createElement("button");
+    // Set CSS for the control.
+    controlButton.style.backgroundColor = "#fff";
+    controlButton.style.border = "2px solid #fff";
+    controlButton.style.borderRadius = "3px";
+    controlButton.style.boxShadow = "0 2px 6px rgba(0,0,0,.3)";
+    controlButton.style.color = "rgb(25,25,25)";
+    controlButton.style.cursor = "pointer";
+    controlButton.style.fontFamily = "Roboto,Arial,sans-serif";
+    controlButton.style.fontSize = "11px";
+    controlButton.style.lineHeight = "38px";
+    controlButton.style.margin = "7px";
+    controlButton.style.padding = "0 5px";
+    controlButton.style.textAlign = "center";
+    controlButton.textContent = "Center";
+    controlButton.title = "Click to recenter the map";
+    controlButton.type = "button";
+    // Setup the click event listeners: simply set the map to Chicago.
+    controlButton.addEventListener("click", () => {
+      mapc.setCenter(currentLatLng);
+      console.log("currentLatLng Button", currentLatLng);
+    });
+    return controlButton;
+  }
 
   const onLoad = React.useCallback((map) => {
     // This is just an example of getting and using the map instance!!! don't just blindly copy!
@@ -97,12 +126,21 @@ function Home() {
     // map.setZoom(12);
     getDengueClusters();
     getCurrentLatLng();
+    // Create the DIV to hold the control.
+    const centerControlDiv = document.createElement("div");
+    // Create the control.
+    const centerControl = createCenterControl(map);
+    // console.log("map", map.controls);
+    // console.log("window", window.google);
+    // Append the control to the DIV.
+    centerControlDiv.appendChild(centerControl);
+    // if (map && map.controls) {
+    //   map.controls[window.google.maps.ControlPosition.RIGHT_BOTTOM].push(
+    //     centerControlDiv
+    //   );
+    // }
     setMap(map);
   }, []);
-
-  const onInfoLoad = (infoWindow) => {
-    console.log("infoWindow: ", infoWindow);
-  };
 
   const divStyle = {
     background: `white`,
@@ -122,8 +160,7 @@ function Home() {
             lng: position.coords.longitude,
           };
           const latLng = JSON.stringify(
-            position.coords.latitude,
-            position.coords.longitude
+            `${position.coords.latitude},${position.coords.longitude}`
           );
 
           handleNewAddress({ frontlatlng, latLng, obj: {} });
@@ -161,10 +198,30 @@ function Home() {
   }, []);
 
   const handleNewAddress = async (address) => {
+    setActiveInfoWindowResults({ address: "", search: "" });
     setCurrentLatLng(address.frontlatlng);
-    console.log("handlenewaddress", address);
     const finalResults = await apiService.getNearestRiskAreaDistance(address);
     setSearchResult(finalResults.data);
+    console.log("finalResults.data", finalResults.data);
+
+    if (address && address.address) {
+      setActiveInfoWindowResults({ address: address.address, search: "yes" });
+    } else if (address && address.frontlatlng) {
+      const reverseGeoResults = await apiService.reverseGeocode(
+        address.frontlatlng
+      );
+      // console.log(reverseGeoResults.data.results[0].formatted_address);
+      if (
+        reverseGeoResults.data.results &&
+        reverseGeoResults.data.status === "OK"
+      ) {
+        setActiveInfoWindowResults({
+          address: reverseGeoResults.data.results[0].formatted_address,
+        });
+      }
+    } else {
+    }
+
     setZoom(16);
   };
 
@@ -179,24 +236,24 @@ function Home() {
    */
   React.useEffect(() => {
     // console.log("searchResult", searchResult);
-  }, [searchResult]);
+    console.log("currentLatLng", currentLatLng);
+    console.log("activeInfoWindowResults", activeInfoWindowResults);
+  }, [searchResult, currentLatLng, activeInfoWindowResults]);
 
   const mapOptions = {
     streetViewControl: false,
     mapTypeControl: false,
   };
 
-  const markerMouseOver = (props, marker) => {
-    // setActiveMarker(marker);
-    setSelectedPlace(props);
+  const markerMouseOver = (props) => {
     setShowingInfoWindow(true);
-    console.log(marker);
-    console.log(props);
   };
 
-  const markerMouseOut = () => {};
+  const markerMouseOut = () => {
+    setShowingInfoWindow(false);
+  };
 
-  const infoOptions = { visible: false };
+  /* const iconOptions =  */
 
   return isLoaded ? (
     <div className='mapSearchContainer'>
@@ -209,22 +266,36 @@ function Home() {
         options={mapOptions}
       >
         <Marker
-          name='MarkerTest'
-          onMouseOver={(MapMouseEvent) => console.log(MapMouseEvent)}
+          /*  icon={"http://maps.google.com/mapfiles/ms/icons/blue-dot.png"} */
+          icon={{
+            path: window.google.maps.SymbolPath.CIRCLE,
+            scale: 6,
+            fillOpacity: 1,
+            strokeWeight: 2,
+            fillColor: "#5384ED",
+            strokeColor: "#ffffff",
+          }}
+          onMouseOver={markerMouseOver}
+          onMouseOut={markerMouseOut}
           position={currentLatLng}
-        />
+        >
+          {showingInfoWindow && (
+            <InfoWindow position={currentLatLng}>
+              <div style={divStyle}>
+                <h3>
+                  {activeInfoWindowResults.address === ""
+                    ? "Unable to fetch address"
+                    : activeInfoWindowResults.address}
+                </h3>
+                <h4>The 150m radius is demarcated by the green circle</h4>
+              </div>
+            </InfoWindow>
+          )}
+        </Marker>
+
         <Circle center={currentLatLng} options={circleoptions} />
         <Polygon onLoad={onLoad} paths={highRisk} options={highoptions} />
         <Polygon onLoad={onLoad} paths={medRisk} options={medoptions} />
-        {/* <InfoWindow
-          position={currentLatLng}
-          options={infoOptions}
-          visible={false}
-        >
-          <div style={divStyle}>
-            <h1>InfoWindow</h1>
-          </div>
-        </InfoWindow> */}
       </GoogleMap>
       <div style={searchStyles}>
         <Grid sx={{ mt: 3 }}>
@@ -234,12 +305,22 @@ function Home() {
           {/* eslint-disable-next-line no-nested-ternary */}
           {searchResult.isWithinRiskArea ? (
             <div>
-              Search area is estimated to be within{" "}
-              {searchResult.minimumDistance} metres of a{" "}
-              {searchResult.riskAreaType.toLowerCase()} risk dengue cluster.
+              {activeInfoWindowResults &&
+              activeInfoWindowResults.search === "yes"
+                ? "Search"
+                : "Your"}{" "}
+              area is estimated to be within {searchResult.minimumDistance}{" "}
+              metres of a {searchResult.riskAreaType.toLowerCase()} risk dengue
+              cluster.
             </div>
           ) : searchResult.riskAreaType === "low" ? (
-            <div>Your area is more than 150 metres from a dengue cluster</div>
+            <div>
+              {activeInfoWindowResults &&
+              activeInfoWindowResults.search === "yes"
+                ? "Search"
+                : "Your"}{" "}
+              area is more than 150 metres from a dengue cluster
+            </div>
           ) : (
             ""
           )}
@@ -247,6 +328,6 @@ function Home() {
       </div>
     </div>
   ) : null;
-}
+};
 
 export default React.memo(Home);

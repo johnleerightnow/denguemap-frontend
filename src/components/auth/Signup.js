@@ -197,6 +197,7 @@ const SignUp = () => {
             fulladdress: value,
             latLng: result2,
           };
+          console.log(finalResult);
           apiservices.signup(finalResult);
           setRedirect(true);
         });

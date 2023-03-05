@@ -17,12 +17,14 @@ const GOOGLE_MAPS_API_KEY = process.env.REACT_APP_GOOGLE_API;
 
 const descriptionHighRisk = (
   <span>
-    High-risk area with 10 or more cases - <span>Red.</span>
+    High-risk area with 10 or more cases -{" "}
+    <span style={{ color: "red", background: "light grey" }}>Red.</span>
   </span>
 );
 const descriptionMedRisk = (
   <span>
-    Med-risk area with less than 10 cases - <span>Yellow</span>
+    Med-risk area with less than 10 cases -{" "}
+    <span style={{ color: "yellow" }}>Yellow</span>
   </span>
 );
 
@@ -110,6 +112,10 @@ function SearchBar(props) {
       }
     });
 
+    // console.log("value", value);
+    // console.log("inputValue", inputValue);
+    // console.log("fetch", fetch);
+
     return () => {
       active = false;
     };
@@ -129,11 +135,12 @@ function SearchBar(props) {
           props.newaddress({
             latLng: `${res.lat},${res.lng}`,
             frontlatlng: res,
-            obj: {
+            address: address,
+            /* obj: {
               latLng: `${res.lat},${res.lng}`,
               riskArea: "High",
               location: address,
-            },
+            }, */
           });
         })
         .catch((err) => console.log("err", err));
@@ -249,7 +256,7 @@ function SearchBar(props) {
           onClose={handlePopoverClose}
           disableRestoreFocus
         >
-          <Typography sx={{ p: 1 }}>
+          <Typography sx={{ p: 1 }} style={{ background: "#C9B2A3" }}>
             {descriptionHighRisk}
             <br />
             {descriptionMedRisk}

@@ -30,6 +30,18 @@ const dengueClustersApi = {
   contactform: (formValues) => instance.post("/contactform", formValues),
   forgetpassword: (email) => instance.post("/forgetpassword", email),
   resetpassword: (tokenNid) => instance.post("/resetpassword", tokenNid),
+  reverseGeocode: (latlng) => {
+    // console.log(latlng);
+    return axios.get(
+      `https://maps.googleapis.com/maps/api/geocode/json?latlng=${Number(
+        latlng.lat
+      )},${Number(
+        latlng.lng
+      )}&location_type=ROOFTOP&result_type=street_address&key=${
+        process.env.REACT_APP_GOOGLE_API
+      }`
+    );
+  },
 };
 
 export default dengueClustersApi;
